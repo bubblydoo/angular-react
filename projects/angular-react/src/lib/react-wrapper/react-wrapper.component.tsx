@@ -11,11 +11,12 @@ import {
   ViewChild,
 } from "@angular/core";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import * as ReactDOM from "react-dom/client";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
 
 import { InjectorContext } from "../injector-context/injector-context";
+import { nestWrappers } from "../util/nest-wrappers";
 
 @Component({
   selector: "react-wrapper",
@@ -31,6 +32,8 @@ export class ReactWrapperComponent
   @Input()
   component: React.ElementType | null = null;
 
+  private reactDomRoot: ReactDOM.Root | null = null;
+
   constructor(
     private injector: Injector,
     private ngModuleRef: NgModuleRef<any>,
@@ -40,6 +43,8 @@ export class ReactWrapperComponent
   ngOnInit() {}
 
   ngAfterViewInit() {
+    if (!this.containerRef) throw new Error("No container ref");
+    this.reactDomRoot = ReactDOM.createRoot(this.containerRef.nativeElement);
     this.render();
   }
 
@@ -48,36 +53,27 @@ export class ReactWrapperComponent
   }
 
   ngOnDestroy() {
-    if (this.containerRef)
-      ReactDOM.unmountComponentAtNode(this.containerRef.nativeElement);
+    this.reactDomRoot?.unmount();
   }
 
   private render() {
     if (!this.component)
       throw new Error("react-wrapper needs a component but none was passed");
 
-    if (!this.containerRef) return;
+    if (!this.reactDomRoot) return;
 
-    let WrappedComponent = () => {
-      if (!this.component) return <></>;
-      return <this.component {...this.props} />;
-    };
+    // flatten the wrappers into one component
+    const NestedWrappers =
+      this.angularReactService.wrappers.reduce(nestWrappers);
 
-    for (const Wrapper of this.angularReactService.wrappers) {
-      WrappedComponent = () => (
-        <Wrapper>
-          <WrappedComponent />
-        </Wrapper>
-      );
-    }
-
-    ReactDOM.render(
+    this.reactDomRoot.render(
       <AngularModuleContext.Provider value={this.ngModuleRef}>
         <InjectorContext.Provider value={this.injector}>
-          <WrappedComponent />
+          <NestedWrappers>
+            <this.component {...this.props} />
+          </NestedWrappers>
         </InjectorContext.Provider>
-      </AngularModuleContext.Provider>,
-      this.containerRef.nativeElement
+      </AngularModuleContext.Provider>
     );
   }
 }

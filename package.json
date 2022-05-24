@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build && sed -i '' 's/react-wrapper.component.tsx/react-wrapper.component/g' dist/angular-react/lib/angular-react.module.d.ts dist/angular-react/esm2020/lib/angular-react.module.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
