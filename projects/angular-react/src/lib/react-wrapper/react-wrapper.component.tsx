@@ -23,7 +23,7 @@ import { nestWrappers } from "../util/nest-wrappers";
   template: `<div #wrapper></div>`,
 })
 export class ReactWrapperComponent
-  implements OnChanges, OnDestroy, AfterViewInit, OnInit
+  implements OnChanges, OnDestroy, AfterViewInit
 {
   @ViewChild("wrapper", { static: false }) containerRef: ElementRef | null =
     null;
@@ -39,8 +39,6 @@ export class ReactWrapperComponent
     private ngModuleRef: NgModuleRef<any>,
     private angularReactService: AngularReactService
   ) {}
-
-  ngOnInit() {}
 
   ngAfterViewInit() {
     if (!this.containerRef) throw new Error("No container ref");
@@ -63,8 +61,9 @@ export class ReactWrapperComponent
     if (!this.reactDomRoot) return;
 
     // flatten the wrappers into one component
-    const NestedWrappers =
-      this.angularReactService.wrappers.reduce(nestWrappers);
+    const NestedWrappers = this.angularReactService.wrappers.length
+      ? this.angularReactService.wrappers.reduce(nestWrappers)
+      : (props: any) => props.children;
 
     this.reactDomRoot.render(
       <AngularModuleContext.Provider value={this.ngModuleRef}>

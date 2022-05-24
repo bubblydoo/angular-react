@@ -8,7 +8,7 @@ type ProviderTokenTypeHelper<T> = T extends ProviderToken<T>
   ? ProviderToken<T>
   : PublicInterface<ProviderToken<T>>;
 
-function useInjected<T>(
+function useInjected<T = any>(
   token: ProviderTokenTypeHelper<T>,
   notFoundValue?: T,
   flags?: InjectFlags

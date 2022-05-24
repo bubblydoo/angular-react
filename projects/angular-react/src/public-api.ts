@@ -10,6 +10,6 @@ export * from './lib/angular-module-context/angular-module-context';
 import AngularWrapper from './lib/angular-wrapper/angular-wrapper';
 import AngularWrapperWithModule from './lib/angular-wrapper-with-module/angular-wrapper-with-module';
 import useInjected from './lib/use-injected/use-injected';
-import useObservableValue from './lib/use-observable-value/use-observable-value';
+import useObservable from './lib/use-observable/use-observable';
 
-export { AngularWrapper, AngularWrapperWithModule, useInjected, useObservableValue };
+export { AngularWrapper, AngularWrapperWithModule, useInjected, useObservable };
