@@ -6,4 +6,6 @@ import { Injectable } from '@angular/core';
 export class AngularReactService {
 
   constructor() { }
+
+  wrappers: ((children: any) => any)[] = [];
 }

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AngularReactComponent } from './angular-react.component';
+import { ReactWrapperComponent } from './react-wrapper.component';
 
-describe('AngularReactComponent', () => {
-  let component: AngularReactComponent;
-  let fixture: ComponentFixture<AngularReactComponent>;
+describe('ReactWrapperComponent', () => {
+  let component: ReactWrapperComponent;
+  let fixture: ComponentFixture<ReactWrapperComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AngularReactComponent ]
+      declarations: [ ReactWrapperComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AngularReactComponent);
+    fixture = TestBed.createComponent(ReactWrapperComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,16 +1,9 @@
 import { NgModule } from '@angular/core';
-import { AngularReactComponent } from './angular-react.component';
-
-
+import { ReactWrapperComponent } from './react-wrapper/react-wrapper.component';
 
 @NgModule({
-  declarations: [
-    AngularReactComponent
-  ],
-  imports: [
-  ],
-  exports: [
-    AngularReactComponent
-  ]
+  declarations: [ReactWrapperComponent],
+  imports: [],
+  exports: [ReactWrapperComponent],
 })
-export class AngularReactModule { }
+export class AngularReactModule {}
