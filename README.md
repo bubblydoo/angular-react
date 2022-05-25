@@ -69,3 +69,32 @@ constructor(angularReact: AngularReactService) {
 ```
 
 In this example, we use `ApolloProvider` to provide a client to each React element. We can then use `useQuery` in all React components.
+
+## Developing
+
+You can test the functionality of the components inside a local Storybook:
+
+```bash
+npm run storybook
+```
+
+If you want to use your local build in an Angular project, you'll need to build it:
+
+```bash
+npm run build
+```
+
+Then, use `npm link`:
+
+```bash
+cd dist/angular-react
+npm link # this will link @bubblydoo/angular-react to dist/angular-react
+```
+
+In your Angular project:
+
+```
+npm link @bubblydoo/angular-react
+```
+
+`node_modules/@bubblydoo/angular-react` will then be symlinked to `dist/angular-react`.
