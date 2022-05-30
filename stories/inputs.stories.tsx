@@ -1,5 +1,5 @@
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
-import { ChangeDetectorRef, Component, EventEmitter, NgZone, Output } from "@angular/core";
+import { ChangeDetectorRef, Component, EventEmitter, Input, NgZone, Output } from "@angular/core";
 import { Meta, moduleMetadata } from "@storybook/angular";
 import React, { useCallback } from "react";
 import {
@@ -10,15 +10,10 @@ import {
 
 @Component({
   selector: "inner-angular",
-  template: `<button>
-    Click here
-  </button>
-  <button (click)="customEvent.emit()">
-    Custom event here
-  </button>`,
+  template: `Input: {{ input1 }}`,
 })
 class InnerAngularComponent {
-  @Output() customEvent = new EventEmitter<void>();
+  @Input('i1') input1?: string;
 }
 
 @Component({
@@ -31,23 +26,15 @@ class OuterAngularComponent {
 }
 
 function ReactComponent() {
-  const zone = useInjected(NgZone)
-  const clickHandler = useCallback(() => {
-    alert(`Received click! Zone name: ${Zone.current?.name}`);
-  }, [zone]);
-  const customEventHandler = useCallback(() => {
-    alert(`Received custom event! Zone name: ${Zone.current?.name}`);
-  }, [zone]);
-
   return (
     <div style={{ border: "1px solid", padding: "5px" }}>
-      <AngularWrapper component={InnerAngularComponent} events={{ click: clickHandler }} outputs={{ customEvent: customEventHandler }} />
+      <AngularWrapper component={InnerAngularComponent} inputs={{ i1: 'abc' }} />
     </div>
   );
 }
 
 export default {
-  title: "NgZone Handling",
+  title: "Inputs Handling",
   component: OuterAngularComponent,
   decorators: [
     moduleMetadata({

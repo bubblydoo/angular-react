@@ -8,6 +8,7 @@ function AngularWrapper(
     component: any;
     inputs?: Record<string, any>;
     events?: Record<string, (ev: Event) => any>;
+    outputs?: Record<string, (value: any) => any>;
     children?: any;
   },
   forwardedRef: ForwardedRef<HTMLElement>
@@ -23,6 +24,7 @@ function AngularWrapper(
       moduleRef={moduleRef}
       inputs={props.inputs}
       events={props.events}
+      outputs={props.outputs}
       ref={forwardedRef}
     >
       {props.children}

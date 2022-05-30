@@ -1,6 +1,13 @@
-import type * as ng from '@angular/core';
-import React, { ForwardedRef, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import * as ng from "@angular/core";
+import React, {
+  ForwardedRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import ReactDOM from "react-dom";
+import { Subscribable, Unsubscribable } from "rxjs";
 
 function AngularWrapperWithModule(
   {
@@ -9,6 +16,7 @@ function AngularWrapperWithModule(
     moduleRef: ngModuleRef,
     inputs,
     events,
+    outputs,
     children,
   }: {
     name?: string;
@@ -16,26 +24,24 @@ function AngularWrapperWithModule(
     moduleRef: ng.NgModuleRef<any>;
     inputs?: Record<string, any>;
     events?: Record<string, (ev: Event) => any>;
+    outputs?: Record<string, (value: any) => any>;
     children?: any;
   },
   forwardedRef: ForwardedRef<HTMLElement>
 ) {
-  const renderedComponentRef = useRef<ng.ComponentRef<any>>();
-  const [renderedElement, setRenderedElement] = useState<HTMLElement | null>(null);
+  const [componentFactory, setComponentFactory] =
+    useState<ng.ComponentFactory<any> | null>(null);
+  const [renderedComponent, setRenderedComponentRef] =
+    useState<ng.ComponentRef<any> | null>(null);
+  const [renderedElement, setRenderedElement] =
+    useState<HTMLElement | null>(null);
 
-  const setInputs = (componentRef: ng.ComponentRef<any>, inputs: Record<string, any>) => {
-    for (const [key, value] of Object.entries(inputs || {})) {
-      componentRef.instance[key] = value;
-    }
-    renderedComponentRef.current = componentRef;
-    componentRef.changeDetectorRef.detectChanges();
-    // TODO: for more compat see @angular/elements
-    // https://github.com/angular/angular/blob/4332897baa2226ef246ee054fdd5254e3c129109/packages/elements/src/component-factory-strategy.ts#L200
-  };
+  // TODO: for more compat see @angular/elements
+  // https://github.com/angular/angular/blob/4332897baa2226ef246ee054fdd5254e3c129109/packages/elements/src/component-factory-strategy.ts#L200
 
   const hasChildren = !!children;
   const ngContentContainerEl = useMemo<HTMLDivElement | null>(() => {
-    if (hasChildren) return document.createElement('div');
+    if (hasChildren) return document.createElement("div");
     return null;
   }, [hasChildren]);
 
@@ -61,12 +67,25 @@ function AngularWrapperWithModule(
       if (node === null) return;
       setRenderedElement(node);
       if (forwardedRef) {
-        typeof forwardedRef === 'function' ? forwardedRef(node) : (forwardedRef.current = node);
+        typeof forwardedRef === "function"
+          ? forwardedRef(node)
+          : (forwardedRef.current = node);
       }
-      const projectableNodes = ngContentContainerEl ? [[ngContentContainerEl]] : [];
-      const componentFactory = ngModuleRef.componentFactoryResolver.resolveComponentFactory(ngComponent);
-      const componentRef = componentFactory.create(ngModuleRef.injector, projectableNodes, node);
-      if (inputs) setInputs(componentRef, inputs);
+      const projectableNodes = ngContentContainerEl
+        ? [[ngContentContainerEl]]
+        : [];
+      const componentFactory =
+        ngModuleRef.componentFactoryResolver.resolveComponentFactory(
+          ngComponent
+        );
+      const componentRef = componentFactory.create(
+        ngModuleRef.injector,
+        projectableNodes,
+        node
+      );
+
+      setComponentFactory(componentFactory);
+      setRenderedComponentRef(componentRef);
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,24 +93,75 @@ function AngularWrapperWithModule(
   );
 
   useEffect(() => {
-    if (renderedComponentRef.current && inputs) setInputs(renderedComponentRef.current, inputs);
-  }, [inputs]);
+    if (!renderedComponent) return;
+    if (!componentFactory) return;
+    if (!inputs) return;
+
+    for (const [key, value] of Object.entries(inputs || {})) {
+      const inputSettings = componentFactory.inputs.find(
+        ({ templateName }) => templateName === key
+      );
+      if (!inputSettings) throw new Error(`Unknown input: ${key}`);
+      renderedComponent.instance[inputSettings.propName] = value;
+    }
+    renderedComponent.changeDetectorRef.detectChanges();
+  }, [renderedComponent, componentFactory, inputs]);
 
   useEffect(() => {
-    if (!renderedComponentRef.current) return;
+    if (!renderedComponent) return;
+    if (!componentFactory) return;
+    if (!outputs) return;
+
+    const subscriptions: Unsubscribable[] = [];
+
+    for (const [key, handler] of Object.entries(outputs || {})) {
+      const outputSettings = componentFactory.outputs.find(
+        ({ templateName }) => templateName === key
+      );
+      if (!outputSettings) throw new Error(`Unknown output: ${key}`);
+
+      const outputEmitter: Subscribable<any> =
+        renderedComponent.instance[outputSettings.propName];
+
+      if (!outputEmitter)
+        throw new Error(`Output not found: ${outputSettings.propName}`);
+
+      const subscription = outputEmitter.subscribe({
+        next: (event: any) => {
+          handler(event);
+        },
+      });
+      subscriptions.push(subscription);
+    }
+
     return () => {
-      renderedComponentRef.current!.destroy();
+      for (const subscription of subscriptions) {
+        subscription.unsubscribe();
+      }
     };
-  }, []);
+  }, [renderedComponent, componentFactory, outputs]);
+
+  useEffect(() => {
+    if (!renderedComponent) return;
+    return () => {
+      renderedComponent!.destroy();
+    };
+  }, [renderedComponent]);
 
   let componentName = ngComponentName;
   if (!componentName) {
     componentName = ngComponent.ɵcmp?.selectors?.[0]?.[0];
     if (!componentName) {
-      console.error(`Couldn't get component name from component`, ngComponent.ɵcmp);
+      console.error(
+        `Couldn't get component name from component`,
+        ngComponent.ɵcmp
+      );
       throw new Error(`Couldn't get component name from component`);
     } else if (!componentName.match(/^[a-z0-9-]+$/)) {
-      console.error(`Couldn't use component selector as component name`, componentName);
+      console.error(
+        `Couldn't use component selector as component name`,
+        componentName
+      );
       throw new Error(`Couldn't use component selector as component name`);
     }
   }
@@ -99,7 +169,8 @@ function AngularWrapperWithModule(
   return (
     <>
       {React.createElement(componentName, { ref: elRef })}
-      {ngContentContainerEl && ReactDOM.createPortal(<>{children}</>, ngContentContainerEl)}
+      {ngContentContainerEl &&
+        ReactDOM.createPortal(<>{children}</>, ngContentContainerEl)}
     </>
   );
 }
