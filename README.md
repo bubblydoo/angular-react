@@ -7,18 +7,20 @@ This is a small Angular library that lets you use React components inside Angula
 ```
 
 ```tsx
-function ReactComponent(props) {
-  return <AngularWrapper component={TextComponent} inputs={{ text: props.text }}>
+function ReactComponent({ text }) {
+  return <AngularWrapper component={TextComponent} inputs={{ text }}>
 }
 ```
 
-### Installation
+## Installation
 
 ```bash
 npm i @bubblydoo/angular-react
 ```
 
 ```ts
+import { AngularReactModule } from '@bubblydoo/react-angular'
+
 @NgModule({
   ...,
   imports: [
@@ -28,11 +30,60 @@ npm i @bubblydoo/angular-react
 })
 ```
 
+## Features
+
+### `ReactWrapperComponent`
+
+Use this component when you want to use React in Angular.
+
+It takes two inputs:
+- `component`: A React component
+- `props?`: The props you want to pass to the React component
+
+The React component will be first rendered on `ngAfterViewInit` and rerendered on every `ngOnChanges` call.
+
+```ts
+import Button from './button.tsx';
+
+@Component({
+  template: `<react-wrapper [component]="Button" [props]="{ children: 'Hello world!' }">`
+})
+class AppComponent {
+  Button = Button
+}
+```
+
+### `AngularWrapper`
+
+Use this component when you want to use Angular in React.
+
+It takes a few inputs:
+- `component`: An Angular component
+- `inputs?`: The inputs you want to pass to the Angular component, in an object
+- `outputs?`: The outputs you want to pass to the Angular component, in an object
+- `events?`: The events from the Angular component to listen to, using `addEventListener`. Event handlers are wrapped in `NgZone.run`
+- `ref?`: The ref to the rendered DOM element (uses `React.forwardRef`)
+
+```tsx
+import { TextComponent } from './text/text.component.ts'
+
+function Text(props) {
+  return (
+    <AngularWrapper
+      component={TextComponent}
+      inputs={{ text: props.text }}
+      events={{ click: () => console.log('clicked') }}/>
+  )
+}
+```
+
 ### `useInjected`
 
 The Angular Injector is provided on each React component by default using React Context. You can use Angular services and other injectables with it:
 
 ```tsx
+import { useInjected } from '@bubblydoo/react-angular'
+
 const authService = useInjected(AuthService)
 ```
 
@@ -41,7 +92,7 @@ const authService = useInjected(AuthService)
 Because consuming observables is so common, we added a helper hook for it:
 
 ```tsx
-import { useObservable } from '@bubblydoo/react-angular'
+import { useObservable, useInjected } from '@bubblydoo/react-angular'
 
 function LoginStatus() {
   const authService = useInjected(AuthService)
