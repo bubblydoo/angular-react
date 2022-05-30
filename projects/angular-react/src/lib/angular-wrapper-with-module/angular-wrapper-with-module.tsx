@@ -49,18 +49,32 @@ function AngularWrapperWithModule(
   useEffect(() => {
     if (!events) return;
     if (!renderedElement) return;
+    if (!ngModuleRef) return;
 
-    const localEvents = events;
+    const ngZone = ngModuleRef.injector.get(ng.NgZone);
+
     const localEl = renderedElement;
-    for (const event in localEvents) {
-      localEl.addEventListener(event, localEvents[event]);
+
+    // sometimes the event handlers are executed in the Angular zone, sometimes they're not
+    // we make sure they're always in the Angular zone
+    const ngZonedEvents: typeof events = {};
+
+    for (const eventKey in events) {
+      const handler = events[eventKey];
+      ngZonedEvents[eventKey] = (ev) => {
+        ngZone.run(() => handler(ev));
+      };
+    }
+
+    for (const event in ngZonedEvents) {
+      localEl.addEventListener(event, ngZonedEvents[event]);
     }
     return () => {
-      for (const event in localEvents) {
-        localEl.removeEventListener(event, localEvents[event]);
+      for (const event in ngZonedEvents) {
+        localEl.removeEventListener(event, ngZonedEvents[event]);
       }
     };
-  }, [renderedElement, events]);
+  }, [renderedElement, events, ngModuleRef]);
 
   const elRef = useCallback<(node: HTMLElement) => void>(
     async (node) => {
@@ -111,6 +125,9 @@ function AngularWrapperWithModule(
     if (!renderedComponent) return;
     if (!componentFactory) return;
     if (!outputs) return;
+    if (!ngModuleRef) return;
+
+    const ngZone = ngModuleRef.injector.get(ng.NgZone);
 
     const subscriptions: Unsubscribable[] = [];
 
@@ -127,8 +144,9 @@ function AngularWrapperWithModule(
         throw new Error(`Output not found: ${outputSettings.propName}`);
 
       const subscription = outputEmitter.subscribe({
-        next: (event: any) => {
-          handler(event);
+        next: (value: any) => {
+          // like the events, we make sure the output handlers are called in the Angular zone
+          ngZone.run(() => handler(value));
         },
       });
       subscriptions.push(subscription);
@@ -139,7 +157,7 @@ function AngularWrapperWithModule(
         subscription.unsubscribe();
       }
     };
-  }, [renderedComponent, componentFactory, outputs]);
+  }, [renderedComponent, componentFactory, outputs, ngModuleRef]);
 
   useEffect(() => {
     if (!renderedComponent) return;
