@@ -6,7 +6,7 @@ function useObservable<T = any>(
   _default: T | null = null
 ) {
   const [next, setNext] = useState<T | null>(_default);
-  const [error, setError] = useState<T | null>(null);
+  const [error, setError] = useState<any>(null);
   const [complete, setComplete] = useState<boolean>(false);
   useEffect(() => {
     const subscription = observable.subscribe({
