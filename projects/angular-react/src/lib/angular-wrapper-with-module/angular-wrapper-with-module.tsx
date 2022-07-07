@@ -98,6 +98,9 @@ function AngularWrapperWithModule(
         node
       );
 
+      const appRef = ngModuleRef.injector.get(ng.ApplicationRef);
+      appRef.attachView(componentRef.hostView);
+
       setComponentFactory(componentFactory);
       setRenderedComponentRef(componentRef);
     },
