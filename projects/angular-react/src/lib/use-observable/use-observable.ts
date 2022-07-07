@@ -11,7 +11,10 @@ function useObservable<T = any>(
   useEffect(() => {
     const subscription = observable.subscribe({
       next: (next) => setNext(next),
-      error: (error) => setError(error),
+      error: (error) => {
+        console.error("Error emitted by observable (in useObservable)", error);
+        setError(error)
+      },
       complete: () => setComplete(true),
     });
     return () => subscription.unsubscribe();
