@@ -114,6 +114,7 @@ function AngularWrapperWithModule(
     if (!componentFactory) return;
     if (!inputs) return;
 
+    // TODO: In Angular 14, there's a new `setInput` method on ComponentRef, which should be used
     for (const [key, value] of Object.entries(inputs || {})) {
       const inputSettings = componentFactory.inputs.find(
         ({ templateName }) => templateName === key
@@ -121,7 +122,11 @@ function AngularWrapperWithModule(
       if (!inputSettings) throw new Error(`Unknown input: ${key}`);
       renderedComponent.instance[inputSettings.propName] = value;
     }
-    renderedComponent.changeDetectorRef.detectChanges();
+    // Somehow you can't just call detectChanges on renderedComponent.changeDetectorRef
+    // The change detector is not the same as the one you would inject in the constructor
+    // see https://github.com/angular/angular/issues/36667 and https://github.com/angular/angular/issues/18817
+    // This will also be fixed when using `setInput`
+    renderedComponent.injector.get(ng.ChangeDetectorRef).detectChanges();
   }, [renderedComponent, componentFactory, inputs]);
 
   useEffect(() => {
