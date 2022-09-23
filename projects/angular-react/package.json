@@ -1,6 +1,13 @@
 {
   "name": "@bubblydoo/angular-react",
   "version": "0.0.14",
+  "license": "MIT",
+  "author": "Hans Otto Wirtz <hansottowirtz@gmail.com>",
+  "homepage": "https://github.com/bubblydoo/angular-react#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bubblydoo/angular-react.git"
+  },
   "peerDependencies": {
     "@angular/common": "^13.0.0",
     "@angular/core": "^13.0.0"
