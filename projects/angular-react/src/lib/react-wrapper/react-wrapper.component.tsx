@@ -7,8 +7,6 @@ import {
   NgModuleRef,
   OnChanges,
   OnDestroy,
-  OnInit,
-  ViewChild,
 } from "@angular/core";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
@@ -20,13 +18,11 @@ import { nestWrappers } from "../util/nest-wrappers";
 
 @Component({
   selector: "react-wrapper",
-  template: `<div #wrapper></div>`,
+  template: '',
 })
 export class ReactWrapperComponent
   implements OnChanges, OnDestroy, AfterViewInit
 {
-  @ViewChild("wrapper", { static: false }) containerRef: ElementRef | null =
-    null;
   @Input()
   props: any = {};
   @Input()
@@ -37,17 +33,18 @@ export class ReactWrapperComponent
   constructor(
     private injector: Injector,
     private ngModuleRef: NgModuleRef<any>,
-    private angularReactService: AngularReactService
+    private angularReactService: AngularReactService,
+    private elementRef: ElementRef<HTMLElement>
   ) {}
 
   ngAfterViewInit() {
-    if (!this.containerRef) throw new Error("No container ref");
-    this.reactDomRoot = ReactDOM.createRoot(this.containerRef.nativeElement);
+    if (!this.elementRef) throw new Error("No element ref");
+    this.reactDomRoot = ReactDOM.createRoot(this.elementRef.nativeElement);
     this.render();
   }
 
   ngOnChanges() {
-    if (this.containerRef) this.render();
+    if (this.elementRef) this.render();
   }
 
   ngOnDestroy() {
