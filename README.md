@@ -19,7 +19,7 @@ npm i @bubblydoo/angular-react
 ```
 
 ```ts
-import { AngularReactModule } from '@bubblydoo/react-angular'
+import { AngularReactModule } from '@bubblydoo/angular-react'
 
 @NgModule({
   ...,
@@ -82,7 +82,7 @@ function Text(props) {
 The Angular Injector is provided on each React component by default using React Context. You can use Angular services and other injectables with it:
 
 ```tsx
-import { useInjected } from '@bubblydoo/react-angular'
+import { useInjected } from '@bubblydoo/angular-react'
 
 const authService = useInjected(AuthService)
 ```
@@ -92,7 +92,7 @@ const authService = useInjected(AuthService)
 Because consuming observables is so common, we added a helper hook for it:
 
 ```tsx
-import { useObservable, useInjected } from '@bubblydoo/react-angular'
+import { useObservable, useInjected } from '@bubblydoo/angular-react'
 
 function LoginStatus() {
   const authService = useInjected(AuthService)
@@ -149,3 +149,7 @@ npm link @bubblydoo/angular-react
 ```
 
 `node_modules/@bubblydoo/angular-react` will then be symlinked to `dist/angular-react`.
+
+## Further reading
+
+See this blog post for the motivation and more details: [Transitioning from Angular to React, without starting from scratch](https://dev.to/bubblydoo/transitioning-from-angular-to-react-without-starting-from-scratch-j66)
