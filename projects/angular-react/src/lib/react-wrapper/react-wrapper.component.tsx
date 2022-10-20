@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  Injector,
   Input,
   NgModuleRef,
   OnChanges,
@@ -13,7 +12,6 @@ import * as ReactDOM from "react-dom/client";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
 
-import { InjectorContext } from "../injector-context/injector-context";
 import { nestWrappers } from "../util/nest-wrappers";
 
 @Component({
@@ -31,7 +29,6 @@ export class ReactWrapperComponent
   private reactDomRoot: ReactDOM.Root | null = null;
 
   constructor(
-    private injector: Injector,
     private ngModuleRef: NgModuleRef<any>,
     private angularReactService: AngularReactService,
     private elementRef: ElementRef<HTMLElement>
@@ -64,11 +61,9 @@ export class ReactWrapperComponent
 
     this.reactDomRoot.render(
       <AngularModuleContext.Provider value={this.ngModuleRef}>
-        <InjectorContext.Provider value={this.injector}>
-          <NestedWrappers>
-            <this.component {...this.props} />
-          </NestedWrappers>
-        </InjectorContext.Provider>
+        <NestedWrappers>
+          <this.component {...this.props} />
+        </NestedWrappers>
       </AngularModuleContext.Provider>
     );
   }
