@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build && sed -i '' 's/react-wrapper.component.tsx/react-wrapper.component/g' dist/angular-react/lib/angular-react.module.d.ts dist/angular-react/esm2020/lib/angular-react.module.mjs && cp LICENSE README.md dist/angular-react",
+    "build": "cp README.md projects/angular-react/ && ng build && sed -i '' 's/react-wrapper.component.tsx/react-wrapper.component/g' dist/angular-react/lib/angular-react.module.d.ts dist/angular-react/esm2020/lib/angular-react.module.mjs && cp LICENSE README.md dist/angular-react",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "storybook": "start-storybook -p 6006",

@@ -35,5 +35,8 @@
       }
     }
   },
-  "defaultProject": "angular-react"
+  "defaultProject": "angular-react",
+  "cli": {
+    "analytics": false
+  }
 }
