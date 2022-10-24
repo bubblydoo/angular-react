@@ -11,12 +11,11 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
-
-import { nestWrappers } from "../util/nest-wrappers";
+import { NestWrappers } from "../nest-wrappers/nest-wrappers";
 
 @Component({
   selector: "react-wrapper",
-  template: '',
+  template: "",
 })
 export class ReactWrapperComponent
   implements OnChanges, OnDestroy, AfterViewInit
@@ -54,16 +53,13 @@ export class ReactWrapperComponent
 
     if (!this.reactDomRoot) return;
 
-    // flatten the wrappers into one component
-    const NestedWrappers = this.angularReactService.wrappers.length
-      ? this.angularReactService.wrappers.reduce(nestWrappers)
-      : (props: any) => props.children;
+    const wrappers = this.angularReactService.getWrappers();
 
     this.reactDomRoot.render(
       <AngularModuleContext.Provider value={this.ngModuleRef}>
-        <NestedWrappers>
+        <NestWrappers wrappers={wrappers}>
           <this.component {...this.props} />
-        </NestedWrappers>
+        </NestWrappers>
       </AngularModuleContext.Provider>
     );
   }
