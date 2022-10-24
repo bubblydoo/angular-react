@@ -11,7 +11,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
-import { NestWrappers } from "../nest-wrappers/nest-wrappers";
+import { nestWrappers } from "../nest-wrappers/nest-wrappers";
 
 @Component({
   selector: "react-wrapper",
@@ -53,13 +53,11 @@ export class ReactWrapperComponent
 
     if (!this.reactDomRoot) return;
 
-    const wrappers = this.angularReactService.getWrappers();
+    const wrappers = this.angularReactService.wrappers;
 
     this.reactDomRoot.render(
       <AngularModuleContext.Provider value={this.ngModuleRef}>
-        <NestWrappers wrappers={wrappers}>
-          <this.component {...this.props} />
-        </NestWrappers>
+        {nestWrappers(wrappers, <this.component {...this.props} />)}
       </AngularModuleContext.Provider>
     );
   }

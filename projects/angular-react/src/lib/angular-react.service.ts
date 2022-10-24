@@ -9,12 +9,4 @@ export class AngularReactService {
   constructor() { }
 
   wrappers: Wrapper[] = [];
-
-  addWrapper(wrapper: Wrapper) {
-    this.wrappers = [...this.wrappers, wrapper];
-  }
-
-  getWrappers() {
-    return this.wrappers;
-  }
 }

@@ -115,7 +115,7 @@ Because this library creates a different ReactDOM root for each `react-wrapper`,
 constructor(angularReact: AngularReactService) {
   const client = new ApolloClient();
   // equivalent to ({ children }) => <ApolloProvider client={client}>{children}</ApolloProvider>
-  angularReact.addWrapper(({ children }) => React.createElement(ApolloProvider, { client, children }));
+  angularReact.wrappers.push(({ children }) => React.createElement(ApolloProvider, { client, children }));
 }
 ```
 

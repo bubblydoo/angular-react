@@ -22,20 +22,14 @@ class AngularComponent {
   time$ = interval(100);
 
   constructor(private angularReact: AngularReactService) {
-    this.angularReact.addWrapper(({ children }) => (
-      <div style={{ border: "1px solid", padding: 2 }} id={"wrapper1"}>
-        {children}
-      </div>
+    this.angularReact.wrappers.push(({ children }) => (
+      <div style={{ border: "1px solid", padding: 2 }}>1 {children}</div>
     ));
-    this.angularReact.addWrapper(({ children }) => (
-      <div style={{ border: "1px solid", padding: 2 }} id={"wrapper2"}>
-        {children}
-      </div>
+    this.angularReact.wrappers.push(({ children }) => (
+      <div style={{ border: "1px solid", padding: 2 }}>2 {children}</div>
     ));
-    this.angularReact.addWrapper(({ children }) => (
-      <div style={{ border: "1px solid", padding: 2 }} id={"wrapper3"}>
-        {children}
-      </div>
+    this.angularReact.wrappers.push(({ children }) => (
+      <div style={{ border: "1px solid", padding: 2 }}>3 {children}</div>
     ));
   }
 }
