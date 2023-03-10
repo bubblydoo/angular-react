@@ -121,6 +121,41 @@ constructor(angularReact: AngularReactService) {
 
 In this example, we use `ApolloProvider` to provide a client to each React element. We can then use `useQuery` in all React components.
 
+### Refs
+
+You can get a ref to the Angular component instance as follows:
+
+```tsx
+import { ComponentRef } from '@angular/core';
+
+const ref = useRef<ComponentRef<any>>();
+
+<AngularWrapper ref={ref} />;
+```
+
+To get a reference to the Angular component's HTML element, use `ref.location.nativeElement`.
+
+To forward a ref to a React component, you can simply use the props:
+
+```tsx
+const Message = forwardRef((props, ref) => {
+  return <div ref={ref}>{props.message}</div>;
+});
+
+@Component({
+  template: `<react-wrapper [component]="Message" [props]="{ ref, message }">`
+})
+export class MessageComponent {
+  Message = Message;
+
+  message = 'hi!';
+
+  ref(div: HTMLElement) {
+    div.innerHTML = 'hi from the callback ref!';
+  }
+}
+```
+
 ## Developing
 
 You can test the functionality of the components inside a local Storybook:

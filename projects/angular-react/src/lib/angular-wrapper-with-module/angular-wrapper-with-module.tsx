@@ -27,7 +27,7 @@ function AngularWrapperWithModule(
     outputs?: Record<string, (value: any) => any>;
     children?: any;
   },
-  forwardedRef: ForwardedRef<HTMLElement>
+  forwardedRef: ForwardedRef<ng.ComponentRef<any>>
 ) {
   const [componentFactory, setComponentFactory] =
     useState<ng.ComponentFactory<any> | null>(null);
@@ -80,11 +80,6 @@ function AngularWrapperWithModule(
     async (node) => {
       if (node === null) return;
       setRenderedElement(node);
-      if (forwardedRef) {
-        typeof forwardedRef === "function"
-          ? forwardedRef(node)
-          : (forwardedRef.current = node);
-      }
       const projectableNodes = ngContentContainerEl
         ? [[ngContentContainerEl]]
         : [];
@@ -103,6 +98,12 @@ function AngularWrapperWithModule(
 
       setComponentFactory(componentFactory);
       setRenderedComponentRef(componentRef);
+
+      if (forwardedRef) {
+        typeof forwardedRef === "function"
+          ? forwardedRef(componentRef)
+          : (forwardedRef.current = componentRef);
+      }
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,3 +1,4 @@
+import { type ComponentRef } from '@angular/core';
 import React, { ForwardedRef, useContext } from 'react';
 import { AngularModuleContext } from '../angular-module-context/angular-module-context';
 import AngularWrapperWithModule from '../angular-wrapper-with-module/angular-wrapper-with-module';
@@ -11,7 +12,7 @@ function AngularWrapper(
     outputs?: Record<string, (value: any) => any>;
     children?: any;
   },
-  forwardedRef: ForwardedRef<HTMLElement>
+  forwardedRef: ForwardedRef<ComponentRef<any>>
 ) {
   const moduleRef = useContext(AngularModuleContext);
 
