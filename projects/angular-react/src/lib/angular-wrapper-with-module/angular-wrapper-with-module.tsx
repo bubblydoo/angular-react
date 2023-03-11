@@ -29,6 +29,8 @@ function AngularWrapperWithModule(
   },
   forwardedRef: ForwardedRef<ng.ComponentRef<any>>
 ) {
+  if (!ngComponent) throw new Error("AngularWrapperWithModule needs a component but none was provided");
+
   const [componentFactory, setComponentFactory] =
     useState<ng.ComponentFactory<any> | null>(null);
   const [renderedComponent, setRenderedComponentRef] =
