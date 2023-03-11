@@ -1,96 +1,135 @@
-import { TemplateRef, NgModuleRef, EmbeddedViewRef, ApplicationRef, ComponentRef } from "@angular/core";
-import { useContext, useState, useEffect, useMemo } from "react";
-import { AngularModuleContext } from "../angular-module-context/angular-module-context";
-import { ReactToTemplateRefComponent } from "./react-to-template-ref.component";
+import {
+  TemplateRef,
+  NgModuleRef,
+  EmbeddedViewRef,
+  ApplicationRef,
+  ComponentRef,
+  ChangeDetectorRef,
+} from '@angular/core';
+import { useContext, useState, useEffect, useMemo } from 'react';
+import { AngularModuleContext } from '../angular-module-context/angular-module-context';
+import { ReactToTemplateRefComponent } from './react-to-template-ref.component';
 
-export function useAngularTemplate<C>(tmpl: (props: C) => any): TemplateRef<C> | undefined {
+export function useAngularTemplate<C>(
+  tmpl: (props: C) => any
+): TemplateRef<C> | undefined {
   const moduleRef = useContext(AngularModuleContext);
-  if (!moduleRef) throw new Error('useAngularTemplate must be used within an AngularModuleContext');
+  if (!moduleRef)
+    throw new Error(
+      'useAngularTemplate must be used within an AngularModuleContext'
+    );
   return useAngularTemplateWithModule(tmpl, moduleRef);
 }
 
-export function useAngularTemplateWithModule<C>(tmpl: (props: C) => any, ngModuleRef: NgModuleRef<any>): TemplateRef<C> | undefined {
-  const [templateRef, setTemplateRef] = useState<TemplateRef<{ props: C }>>();
-  const [componentRef, setComponentRef] = useState<ComponentRef<ReactToTemplateRefComponent<C>>>();
-  const [viewRefs, setViewRefs] = useState<EmbeddedViewRef<{ props: C }>[]>([]);
+export function useAngularTemplateWithModule<C>(
+  component: (props: C) => any,
+  ngModuleRef: NgModuleRef<any>
+): TemplateRef<C> | undefined {
+  const [templateRef, setTemplateRef] = useState<TemplateRef<C>>();
+  const [updateComponent, setUpdateComponent] =
+    useState<(component: (props: C) => any) => void>();
 
   useEffect(() => {
     let ignore = false;
-    const el = document.createElement('div');
-    const componentFactory =
-      ngModuleRef.componentFactoryResolver.resolveComponentFactory<ReactToTemplateRefComponent<C>>(
-        ReactToTemplateRefComponent
-      );
-    const componentRef = componentFactory.create(ngModuleRef.injector, [], el);
-    setComponentRef(componentRef);
-    componentRef.instance.templateRefPromise.then((templateRef) => {
-      if (ignore) return;
-      setTemplateRef(templateRef);
-    });
+    const controller = new AbortController();
 
-    const appRef = ngModuleRef.injector.get(ApplicationRef);
-    appRef.attachView(componentRef.hostView);
+    createReactWrapperTemplateRef<C>(ngModuleRef, controller.signal).then(
+      ({ templateRef, updateComponent }) => {
+        if (ignore) return;
+        setTemplateRef(templateRef);
+        setUpdateComponent(() => updateComponent);
+      }
+    );
 
     return () => {
       ignore = true;
-      componentRef.destroy();
-      el.remove();
+      controller.abort();
     };
   }, [ngModuleRef]);
 
   useEffect(() => {
-    if (!componentRef || !tmpl) return;
+    if (!component || !updateComponent) return;
+    updateComponent(component);
+  }, [component, updateComponent]);
 
-    componentRef.instance.component = tmpl;
-    // without this, ngAfterViewInit never gets called
-    componentRef.changeDetectorRef.detectChanges();
-  }, [componentRef, tmpl, viewRefs]);
-
-  const propsTemplateRef = useMemo(() => {
-    if (!templateRef) return;
-
-    // we wrap the templateRef for two reasons:
-    // 1. we remap viewProps.context to context.props, so it can be used with `let-props="props"`
-    //    (there is no way to get the whole context on an ng-template, only individiual attributes)
-    // 2. we need to keep track of the viewRefs associated with this templateRef,
-    //    so we can call detectChanges on it when the react tmpl changes
-    //    (kinda hacky, but it works)
-
-    const newTemplateRef: TemplateRef<C> = {
-      get elementRef() {
-        return templateRef.elementRef;
-      },
-      createEmbeddedView(context) {
-        const viewRef = templateRef.createEmbeddedView({ props: context });
-
-        setViewRefs(viewRefs => [...viewRefs, viewRef]);
-        viewRef.onDestroy(() => {
-          setViewRefs(viewRefs => viewRefs.filter(vr => vr !== viewRef));
-        });
-
-        const origContextDescriptor = Object.getOwnPropertyDescriptor(viewRef.constructor.prototype, 'context')!;
-        Object.defineProperty(viewRef, 'context', {
-          get() {
-            return origContextDescriptor.get!.call(viewRef);
-          },
-          set(context) {
-            origContextDescriptor.set!.call(viewRef, { props: context });
-          },
-          enumerable: origContextDescriptor.enumerable,
-          configurable: origContextDescriptor.configurable,
-        });
-
-        return viewRef as any as EmbeddedViewRef<C>;
-      },
-    };
-
-    return newTemplateRef;
-  }, [templateRef]);
-
-  useEffect(() => {
-    // this will be called when tmpl changes (kinda hacky)
-    viewRefs.forEach(viewRef => viewRef.detectChanges());
-  }, [tmpl, viewRefs]);
-
-  return propsTemplateRef;
+  return templateRef;
 }
+
+export const createReactWrapperTemplateRef = async <C = any>(
+  ngModuleRef: NgModuleRef<any>,
+  abortSignal?: AbortSignal
+) => {
+  const el = document.createElement('div');
+
+  const componentFactory =
+    ngModuleRef.componentFactoryResolver.resolveComponentFactory<
+      ReactToTemplateRefComponent<C>
+    >(ReactToTemplateRefComponent);
+  const componentRef = componentFactory.create(ngModuleRef.injector, [], el);
+
+  const appRef = ngModuleRef.injector.get(ApplicationRef);
+  appRef.attachView(componentRef.hostView);
+
+  componentRef.injector.get(ChangeDetectorRef).detectChanges();
+  componentRef.changeDetectorRef.detectChanges();
+
+  const cleanup = () => {
+    componentRef.destroy();
+    el.remove();
+  };
+
+  abortSignal?.addEventListener('abort', cleanup);
+
+  const origTemplateRef = await componentRef.instance.templateRefPromise;
+
+  let viewRefs: EmbeddedViewRef<any>[] = [];
+
+  // we wrap the templateRef for two reasons:
+  // 1. we remap viewProps.context to context.props, so it can be used with `let-props="props"`
+  //    (there is no way to get the whole context on an ng-template, only individiual attributes)
+  // 2. we need to keep track of the viewRefs associated with this templateRef,
+  //    so we can call detectChanges on it when the react component changes
+  //    (kinda hacky, but it works)
+
+  const templateRef: TemplateRef<C> = {
+    get elementRef() {
+      return origTemplateRef.elementRef;
+    },
+    createEmbeddedView(context) {
+      const viewRef = origTemplateRef.createEmbeddedView({ props: context });
+
+      viewRefs.push(viewRef);
+      viewRef.onDestroy(() => {
+        viewRefs = viewRefs.filter((vr) => vr !== viewRef);
+      });
+
+      const origContextDescriptor = Object.getOwnPropertyDescriptor(
+        viewRef.constructor.prototype,
+        'context'
+      )!;
+      Object.defineProperty(viewRef, 'context', {
+        get() {
+          return origContextDescriptor.get!.call(viewRef);
+        },
+        set(context) {
+          origContextDescriptor.set!.call(viewRef, { props: context });
+        },
+        enumerable: origContextDescriptor.enumerable,
+        configurable: origContextDescriptor.configurable,
+      });
+
+      return viewRef as any as EmbeddedViewRef<C>;
+    },
+  };
+
+  const updateComponent = (component: (props: C) => any) => {
+    componentRef.instance.component = component;
+    // we first make sure the input is passed to the ng-template
+    componentRef.injector.get(ChangeDetectorRef).detectChanges();
+    componentRef.changeDetectorRef.detectChanges();
+    // then we make sure all views associated with this ng-template are updated
+    viewRefs.forEach((viewRef) => viewRef.detectChanges());
+  };
+
+  return { templateRef, cleanup, updateComponent };
+};
