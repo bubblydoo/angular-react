@@ -130,6 +130,7 @@ function AngularWrapperWithModule(
     // see https://github.com/angular/angular/issues/36667 and https://github.com/angular/angular/issues/18817
     // This will also be fixed when using `setInput`
     renderedComponent.injector.get(ng.ChangeDetectorRef).detectChanges();
+    renderedComponent.changeDetectorRef.detectChanges();
   }, [renderedComponent, componentFactory, inputs]);
 
   useEffect(() => {
