@@ -10,7 +10,7 @@ projects/angular-react/README.md
 /bazel-out
 
 # dependencies
-/node_modules
+node_modules
 .pnp.*
 .yarn/*
 !.yarn/patches

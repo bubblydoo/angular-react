@@ -220,7 +220,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler-cli@npm:^13":
+"@angular/compiler-cli@npm:13.3.12":
   version: 13.3.12
   resolution: "@angular/compiler-cli@npm:13.3.12"
   dependencies:
@@ -242,6 +242,31 @@ __metadata:
     ngc: bundles/src/bin/ngc.js
     ngcc: bundles/ngcc/main-ngcc.js
   checksum: d5bd308780b78c1b694c09851732ad43dfb42c5ef6ebedb4a64e74247a35d96d31b366c624a1f47e947760f4c4ad5f16c7b3c63a3db84e6ae13c38e00bc0b4a1
+  languageName: node
+  linkType: hard
+
+"@angular/compiler-cli@patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch::locator=%40bubblydoo%2Fangular-react%40workspace%3A.":
+  version: 13.3.12
+  resolution: "@angular/compiler-cli@patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch::version=13.3.12&hash=f6ad47&locator=%40bubblydoo%2Fangular-react%40workspace%3A."
+  dependencies:
+    "@babel/core": ^7.17.2
+    chokidar: ^3.0.0
+    convert-source-map: ^1.5.1
+    dependency-graph: ^0.11.0
+    magic-string: ^0.26.0
+    reflect-metadata: ^0.1.2
+    semver: ^7.0.0
+    sourcemap-codec: ^1.4.8
+    tslib: ^2.3.0
+    yargs: ^17.2.1
+  peerDependencies:
+    "@angular/compiler": 13.3.12
+    typescript: ">=4.4.2 <4.7"
+  bin:
+    ng-xi18n: bundles/src/bin/ng_xi18n.js
+    ngc: bundles/src/bin/ngc.js
+    ngcc: bundles/ngcc/main-ngcc.js
+  checksum: 18f618a1d1f3c8944b1102bcea7bbbaa104fc6a2ccafbb9865061e0919a3104ec39bfc97e12449b1ad7e6e0c55aa21f37dcf216e00ce91a039d8febd50468cd9
   languageName: node
   linkType: hard
 

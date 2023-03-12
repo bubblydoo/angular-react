@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "cp README.md projects/angular-react/ && ng build && sed -i '' 's/react-wrapper.component.tsx/react-wrapper.component/g' dist/angular-react/lib/angular-react.module.d.ts dist/angular-react/esm2020/lib/angular-react.module.mjs && cp LICENSE README.md dist/angular-react",
+    "build": "cd projects/angular-react && cp ../../README.md . && node build.mjs && cp ../../LICENSE ../../README.md ../../dist/angular-react",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "storybook": "start-storybook -p 6006",
@@ -49,5 +49,8 @@
     "ng-packagr": "^13",
     "typescript": "~4.6"
   },
-  "packageManager": "yarn@3.4.1"
+  "packageManager": "yarn@3.4.1",
+  "resolutions": {
+    "@angular/compiler-cli@^13": "patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch"
+  }
 }

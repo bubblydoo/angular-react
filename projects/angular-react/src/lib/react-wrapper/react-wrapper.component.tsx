@@ -56,16 +56,9 @@ export class ReactWrapperComponent
     const wrappers = this.angularReactService.wrappers;
 
     this.reactDomRoot.render(
-      React.createElement(
-        AngularModuleContext.Provider,
-        { value: this.ngModuleRef },
-        [
-          nestWrappers(
-            wrappers,
-            React.createElement(this.component, this.props)
-          ),
-        ]
-      )
+      <AngularModuleContext.Provider value={this.ngModuleRef}>
+        {nestWrappers(wrappers, <this.component {...this.props} />)}
+      </AngularModuleContext.Provider>
     );
   }
 }
