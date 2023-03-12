@@ -52,6 +52,8 @@
   },
   "packageManager": "yarn@3.4.1",
   "resolutions": {
-    "@angular/compiler-cli@^13": "patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch"
+    "@angular/compiler-cli@^13": "patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6"
   }
 }
