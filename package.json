@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^13",
     "@angular/platform-browser-dynamic": "^13",
     "@angular/router": "^13",
+    "its-fine": "^1.0.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rxjs": "~7.5.7",

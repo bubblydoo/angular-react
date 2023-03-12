@@ -6,23 +6,25 @@ import {
   ComponentRef,
   ChangeDetectorRef,
 } from '@angular/core';
+import React from 'react';
 import { useContext, useState, useEffect, useMemo } from 'react';
 import { AngularModuleContext } from '../angular-module-context/angular-module-context';
 import { ReactToTemplateRefComponent } from './react-to-template-ref.component';
+import { useContextBridge } from 'its-fine';
 
-export function useAngularTemplate<C>(
-  tmpl: (props: C) => any
+export function useAngularTemplateRef<C>(
+  Component: (props: C) => any
 ): TemplateRef<C> | undefined {
   const moduleRef = useContext(AngularModuleContext);
   if (!moduleRef)
     throw new Error(
       'useAngularTemplate must be used within an AngularModuleContext'
     );
-  return useAngularTemplateWithModule(tmpl, moduleRef);
+  return useAngularTemplateRefWithModule(Component, moduleRef);
 }
 
-export function useAngularTemplateWithModule<C>(
-  component: (props: C) => any,
+export function useAngularTemplateRefWithModule<C>(
+  Component: (props: C) => any,
   ngModuleRef: NgModuleRef<any>
 ): TemplateRef<C> | undefined {
   const [templateRef, setTemplateRef] = useState<TemplateRef<C>>();
@@ -47,10 +49,12 @@ export function useAngularTemplateWithModule<C>(
     };
   }, [ngModuleRef]);
 
+  const ContextBridge = useContextBridge();
+
   useEffect(() => {
-    if (!component || !updateComponent) return;
-    updateComponent(component);
-  }, [component, updateComponent]);
+    if (!Component || !updateComponent) return;
+    updateComponent((props: any) => <ContextBridge><Component {...props}/></ContextBridge>);
+  }, [Component, updateComponent]);
 
   return templateRef;
 }

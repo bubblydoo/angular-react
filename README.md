@@ -156,6 +156,76 @@ export class MessageComponent {
 }
 ```
 
+### Using templates
+
+#### `useAngularTemplateRef`: to convert a React component into a `TemplateRef`
+
+```tsx
+import { useAngularTemplateRef } from "@bubblydoo/angular-react";
+
+@Component({
+  selector: 'message',
+  template: `
+    <div>
+      <ng-template [ngTemplateOutlet]="tmpl" [ngTemplateOutletContext]="{ message }"></ng-template>
+    </div>
+  `
+})
+class MessageComponent {
+  @Input() tmpl: TemplateRef<{ message: string }>;
+  @Input() message: string;
+}
+
+function Text(props: { message: string }) {
+  return <>{props.message}</>
+}
+
+function Message(props: { message: string }) {
+  const tmpl = useAngularTemplateRef(Text);
+
+  const inputs = useMemo(() => ({
+    message: props.message,
+    tmpl
+  }), [props.message, tmpl]);
+
+  return <AngularWrapper component={MessageComponent} inputs={inputs} />
+}
+```
+
+#### `useFromAngularTemplateRef`: to convert a `TemplateRef` into a React component
+
+```tsx
+function Message(props: { message: string, tmpl: TemplateRef<{ message: string }> }) {
+  const fromAngularTemplateRef = useFromAngularTemplateRef();
+
+  const inputs = useMemo(() => ({
+    message: props.message,
+    tmpl: (tmplProps) => fromAngularTemplateRef(props.tmpl, tmplProps)
+  }), [props.message, tmpl]);
+
+  return <AngularWrapper component={MessageComponent} inputs={inputs} />
+}
+
+@Component({
+  selector: 'message',
+  template: `
+    <ng-template #tmpl let-message="message">{{ message }}</ng-template>
+    <div>
+      <react-wrapper [component]="Message" [props]="{ tmpl, message }">
+    </div>
+  `
+})
+class MessageComponent {
+  @Input() message: string;
+}
+```
+
+### Context Bridging
+
+If you're using `react-wrapper`, all context is lost by default. You can solve this in two ways:
+- Put all context on `angularReactService.wrappers` (see above). This is not ideal, because there can only be one global context.
+- Use `useContextBridge` from `its-fine` and wrap all React components in a `<ContextBridge>`.
+
 ## Developing
 
 You can test the functionality of the components inside a local Storybook:
@@ -184,6 +254,14 @@ npm link @bubblydoo/angular-react
 ```
 
 `node_modules/@bubblydoo/angular-react` will then be symlinked to `dist/angular-react`.
+
+You might want to use resolutions or overrides if you run into NG0203 errors.
+
+```json
+"resolutions": {
+  "@bubblydoo/angular-react": "file:../angular-react/dist/angular-react"
+}
+```
 
 ## Further reading
 

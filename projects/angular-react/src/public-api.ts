@@ -14,6 +14,6 @@ export * from "./lib/templates/add-angular-module-context";
 export * from "./lib/templates/angular-template-outlet";
 export * from "./lib/templates/react-to-template-ref.component";
 export * from "./lib/templates/template-outlet.component";
-export * from "./lib/templates/use-angular-template";
+export * from "./lib/templates/use-angular-template-ref";
 
 export { AngularWrapper, AngularWrapperWithModule, useInjected, useObservable };

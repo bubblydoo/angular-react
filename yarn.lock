@@ -2068,6 +2068,7 @@ __metadata:
     "@types/react": ^18.0.21
     "@types/react-dom": ^18.0.6
     babel-loader: ^8.2.5
+    its-fine: ^1.0.10
     jasmine-core: ~4.4.0
     karma: ~6.4.1
     karma-chrome-launcher: ~3.1.1
@@ -4218,6 +4219,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 579691e4d5ec09688087568037c35edf8cfb1ab3e07f6c60029280733ee7b5c06d66df6fcc90786702c93ac8cb13bc7ff16c79ddfc75d082938fbaa36e1cdbf4
+  languageName: node
+  linkType: hard
+
+"@types/react-reconciler@npm:^0.28.0":
+  version: 0.28.2
+  resolution: "@types/react-reconciler@npm:0.28.2"
+  dependencies:
+    "@types/react": "*"
+  checksum: 9720f76a334ce4f25205d5bb72303a04f458bb2981cb9bd7f9ed0c16513f6c6ab809099bb5f46dc13e443d4c54e3a77a6038316a127a4dc844db2273f287a669
   languageName: node
   linkType: hard
 
@@ -10811,6 +10821,17 @@ __metadata:
     es-get-iterator: ^1.0.2
     iterate-iterator: ^1.0.1
   checksum: 446a4181657df1872e5020713206806757157db6ab375dee05eb4565b66e1244d7a99cd36ce06862261ad4bd059e66ba8192f62b5d1ff41d788c3b61953af6c3
+  languageName: node
+  linkType: hard
+
+"its-fine@npm:^1.0.10":
+  version: 1.0.10
+  resolution: "its-fine@npm:1.0.10"
+  dependencies:
+    "@types/react-reconciler": ^0.28.0
+  peerDependencies:
+    react: ">=18.0"
+  checksum: 825e90d1dc0e601f188004fb4731f3d4b8093b0d33d50dfd115b740dda6517b8432b109407d75e08f528c04cc6a5763ee5e2ddc3f6d5e24aa15e75800702d69a
   languageName: node
   linkType: hard
 
