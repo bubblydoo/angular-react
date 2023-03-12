@@ -11,6 +11,13 @@ projects/angular-react/README.md
 
 # dependencies
 /node_modules
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # profiling files
 chrome-profiler-events*.json
