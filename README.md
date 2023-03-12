@@ -195,28 +195,31 @@ function Message(props: { message: string }) {
 #### `useFromAngularTemplateRef`: to convert a `TemplateRef` into a React component
 
 ```tsx
-function Message(props: { message: string, tmpl: TemplateRef<{ message: string }> }) {
-  const fromAngularTemplateRef = useFromAngularTemplateRef();
+function Message(props: {
+  message: string;
+  tmpl: TemplateRef<{ message: string }>;
+}) {
+  const Template = useFromAngularTemplateRef(props.tmpl);
 
-  const inputs = useMemo(() => ({
-    message: props.message,
-    tmpl: (tmplProps) => fromAngularTemplateRef(props.tmpl, tmplProps)
-  }), [props.message, tmpl]);
-
-  return <AngularWrapper component={MessageComponent} inputs={inputs} />
+  return <Template message={props.message.toUpperCase()} />;
 }
 
 @Component({
-  selector: 'message',
+  selector: "outer",
   template: `
     <ng-template #tmpl let-message="message">{{ message }}</ng-template>
     <div>
-      <react-wrapper [component]="Message" [props]="{ tmpl, message }">
+      <react-wrapper
+        [component]="Message"
+        [props]="{ tmpl, message }"
+      ></react-wrapper>
     </div>
-  `
+  `,
 })
 class MessageComponent {
-  @Input() message: string;
+  Message = Message;
+
+  @Input() message!: string;
 }
 ```
 

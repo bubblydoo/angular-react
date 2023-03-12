@@ -49,7 +49,7 @@ class OuterAngularComponent {
 
 
 export default {
-  title: "",
+  title: "To Angular TemplateRef",
   component: OuterAngularComponent,
   decorators: [
     moduleMetadata({
