@@ -247,7 +247,7 @@ __metadata:
 
 "@angular/compiler-cli@patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch::locator=%40bubblydoo%2Fangular-react%40workspace%3A.":
   version: 13.3.12
-  resolution: "@angular/compiler-cli@patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch::version=13.3.12&hash=f6ad47&locator=%40bubblydoo%2Fangular-react%40workspace%3A."
+  resolution: "@angular/compiler-cli@patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch::version=13.3.12&hash=e8f1c6&locator=%40bubblydoo%2Fangular-react%40workspace%3A."
   dependencies:
     "@babel/core": ^7.17.2
     chokidar: ^3.0.0
@@ -266,7 +266,7 @@ __metadata:
     ng-xi18n: bundles/src/bin/ng_xi18n.js
     ngc: bundles/src/bin/ngc.js
     ngcc: bundles/ngcc/main-ngcc.js
-  checksum: 18f618a1d1f3c8944b1102bcea7bbbaa104fc6a2ccafbb9865061e0919a3104ec39bfc97e12449b1ad7e6e0c55aa21f37dcf216e00ce91a039d8febd50468cd9
+  checksum: d01af1259a979012133acddb23be67101cc7399f0dca7aa971e39be200f750197a27e8b744ffa6e9c0b2349fb6a63140756ff331e710aa987aff8f67020789d8
   languageName: node
   linkType: hard
 

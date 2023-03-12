@@ -1,32 +1,13 @@
-diff --git a/bundles/chunk-BUHWADBP.js b/bundles/chunk-BUHWADBP.js
-index 6ae014203a0a44090091c061342281a25708ce3b..b665323d307a5c457d094973738b7a43c65cb595 100755
---- a/bundles/chunk-BUHWADBP.js
-+++ b/bundles/chunk-BUHWADBP.js
-@@ -6444,6 +6444,17 @@ function incrementalFromStateTicket(oldProgram, oldState, newProgram, options, i
-     perfRecorder
-   };
+diff --git a/bundles/chunk-HAJOG5B7.js b/bundles/chunk-HAJOG5B7.js
+index 431ebe21ef01d7af94aae426eedd463f6d61dd5d..3b4df809877d2cd8adeb1f22efbd5d3d8ab380b9 100755
+--- a/bundles/chunk-HAJOG5B7.js
++++ b/bundles/chunk-HAJOG5B7.js
+@@ -8,7 +8,7 @@ import {
+ } from "./chunk-GMSUYBZP.js";
+ 
+ // bazel-out/darwin-fastbuild/bin/packages/compiler-cli/src/ngtsc/file_system/src/util.mjs
+-var TS_DTS_JS_EXTENSION = /(?:\.d)?\.ts$|\.js$/;
++var TS_DTS_JS_EXTENSION = /(?:\.d)?\.tsx?$|\.jsx?$/;
+ function normalizeSeparators(path) {
+   return path.replace(/\\/g, "/");
  }
-+var TsxImportRewriter = class {
-+  shouldImportSymbol(symbol, specifier) {
-+    return true;
-+  }
-+  rewriteSymbol(symbol, specifier) {
-+    return symbol;
-+  }
-+  rewriteSpecifier(specifier, inContextOfFile) {
-+    return specifier.replace(/.tsx$/, '');
-+  }
-+};
- var NgCompiler = class {
-   constructor(adapter, options, inputProgram, programDriver, incrementalStrategy, incrementalCompilation, enableTemplateTypeChecker, usePoisonedData, livePerfRecorder) {
-     this.adapter = adapter;
-@@ -6640,7 +6651,8 @@ var NgCompiler = class {
-     if (coreImportsFrom !== null) {
-       importRewriter = new R3SymbolsImportRewriter(coreImportsFrom.fileName);
-     } else {
--      importRewriter = new NoopImportRewriter();
-+      // importRewriter = new NoopImportRewriter();
-+      importRewriter = new TsxImportRewriter();
-     }
-     const defaultImportTracker = new DefaultImportTracker();
-     const before = [
