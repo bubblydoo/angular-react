@@ -2063,6 +2063,8 @@ __metadata:
     "@storybook/angular": ^6.5.12
     "@storybook/builder-webpack5": ^6.5.12
     "@storybook/manager-webpack5": ^6.5.12
+    "@types/eslint": ^8.21.1
+    "@types/estree": ^1.0.0
     "@types/jasmine": ~4.3.0
     "@types/node": ~18.7.0
     "@types/react": ^18.0.21
@@ -3919,7 +3921,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*":
+"@types/eslint@npm:*, @types/eslint@npm:^8.21.1":
   version: 8.21.1
   resolution: "@types/eslint@npm:8.21.1"
   dependencies:
@@ -3929,7 +3931,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/estree@npm:*":
+"@types/estree@npm:*, @types/estree@npm:^1.0.0":
   version: 1.0.0
   resolution: "@types/estree@npm:1.0.0"
   checksum: 910d97fb7092c6738d30a7430ae4786a38542023c6302b95d46f49420b797f21619cdde11fa92b338366268795884111c2eb10356e4bd2c8ad5b92941e9e6443
@@ -4222,7 +4224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:^18.0.21":
+"@types/react@npm:*, @types/react@npm:^18.0.21":
   version: 18.0.28
   resolution: "@types/react@npm:18.0.28"
   dependencies:
