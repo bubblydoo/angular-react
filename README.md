@@ -114,7 +114,7 @@ function LoginStatus() {
 
 ### Global React Context
 
-Because this library creates a different ReactDOM root for each `react-wrapper`, if you want to have a global React Context, you can register it as follows:
+If you want to have a global React Context, you can register it as follows:
 
 ```ts
 // app.component.ts
@@ -127,6 +127,8 @@ constructor(angularReact: AngularReactService) {
 ```
 
 In this example, we use `ApolloProvider` to provide a client to each React element. We can then use `useQuery` in all React components.
+
+This is only needed when your host app is an Angular app. If you're using Angular-in-React, the context will be bridged.
 
 ### Refs
 
