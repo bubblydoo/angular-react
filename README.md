@@ -241,26 +241,28 @@ Contexts are bridged automatically using this library, using [its-fine](https://
 You can test the functionality of the components inside a local Storybook:
 
 ```bash
-npm run storybook
+yarn storybook
 ```
 
 If you want to use your local build in an Angular project, you'll need to build it:
 
 ```bash
-npm run build
+yarn build
 ```
 
-Then, use `npm link`:
+Then, use `yarn link`:
 
 ```bash
 cd dist/angular-react
-npm link # this will link @bubblydoo/angular-react to dist/angular-react
+yarn link # this will link @bubblydoo/angular-react to dist/angular-react
+# or `npm link`
 ```
 
 In your Angular project:
 
-```
-npm link @bubblydoo/angular-react
+```bash
+yarn link @bubblydoo/angular-react
+# or `npm link @bubblydoo/angular-react`
 ```
 
 `node_modules/@bubblydoo/angular-react` will then be symlinked to `dist/angular-react`.
