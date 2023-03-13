@@ -12,14 +12,14 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@angular/animations": "^13",
-    "@angular/common": "^13",
-    "@angular/compiler": "^13",
-    "@angular/core": "^13",
-    "@angular/forms": "^13",
-    "@angular/platform-browser": "^13",
-    "@angular/platform-browser-dynamic": "^13",
-    "@angular/router": "^13",
+    "@angular/animations": "^14",
+    "@angular/common": "^14",
+    "@angular/compiler": "^14",
+    "@angular/core": "^14",
+    "@angular/forms": "^14",
+    "@angular/platform-browser": "^14",
+    "@angular/platform-browser-dynamic": "^14",
+    "@angular/router": "^14",
     "its-fine": "^1.0.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,9 +28,9 @@
     "zone.js": "~0.11.8"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^13",
-    "@angular/cli": "^13",
-    "@angular/compiler-cli": "^13",
+    "@angular-devkit/build-angular": "^14",
+    "@angular/cli": "^14",
+    "@angular/compiler-cli": "^14",
     "@babel/core": "^7.19.3",
     "@storybook/addon-essentials": "^6.5.12",
     "@storybook/angular": "^6.5.12",
@@ -49,13 +49,13 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.0.0",
-    "ng-packagr": "^13",
+    "ng-packagr": "^14",
     "typescript": "~4.6"
   },
   "packageManager": "yarn@3.4.1",
   "resolutions": {
     "@types/react@^16.14.23": "^18.0.21",
     "@types/react-dom@^16.9.14": "^18.0.6",
-    "@angular/compiler-cli@^13": "patch:@angular/compiler-cli@npm%3A13.3.12#./.yarn/patches/@angular-compiler-cli-npm-13.3.12-52d6da9a85.patch"
+    "@angular/compiler-cli@^14": "patch:@angular/compiler-cli@npm%3A14.3.0#./.yarn/patches/@angular-compiler-cli-npm-14.3.0-340f59f610.patch"
   }
 }

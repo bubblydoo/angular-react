@@ -80,7 +80,8 @@ export async function createReactWrapperTemplateRef<C = any>(
       ReactToTemplateRefComponent<C>
     >(ReactToTemplateRefComponent);
 
-  // TODO: in Angular 14, evaluate if this injector is desirable
+  // Q: is it needed to put passedReactContext on the injector here,
+  // considering we override the injector in AngularTemplateOutlet?
   const injectorForComponent = ng.Injector.create({
     providers: passedReactContext
       ? [{ provide: PassedReactContextToken, useValue: passedReactContext }]

@@ -1,0 +1,13 @@
+diff --git a/bundles/chunk-TOKOIIBI.js b/bundles/chunk-TOKOIIBI.js
+index 940329169ed34405ff9db3fa4b00b264ec066dcd..8d2d99976bd8a19e539cf2dab127755651b309d8 100755
+--- a/bundles/chunk-TOKOIIBI.js
++++ b/bundles/chunk-TOKOIIBI.js
+@@ -8,7 +8,7 @@ import {
+ } from "./chunk-XYNRD7NE.js";
+ 
+ // bazel-out/k8-fastbuild/bin/packages/compiler-cli/src/ngtsc/file_system/src/util.mjs
+-var TS_DTS_JS_EXTENSION = /(?:\.d)?\.ts$|\.js$/;
++var TS_DTS_JS_EXTENSION = /(?:\.d)?\.tsx?$|\.jsx?$/;
+ function normalizeSeparators(path) {
+   return path.replace(/\\/g, "/");
+ }

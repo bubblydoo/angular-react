@@ -19,7 +19,7 @@ import { NumberContext, NumberDisplay } from "./common/number";
   selector: "inner2",
   template: `
     <div style="border: 1px solid; padding: 5px; margin: 5px">
-      this is Angular (react context is bound to the AngularWrapper)
+      this is Angular
       <react-wrapper [component]="NumberDisplay"></react-wrapper>
     </div>
   `,
@@ -62,10 +62,10 @@ function TemplateOutletAndDisplay(props: { tmpl: TemplateRef<{}> }) {
   selector: "inner",
   template: `
     <div style="border: 1px solid; padding: 5px; margin: 5px">
-      this is Angular (react context is bound to the AngularWrapper)
+      this is Angular
       <ng-template #tmpl>
         <div style="border: 1px solid; padding: 5px; margin: 5px">
-          this is an Angular template (react context is bound to the react-wrapper until Angular 14)
+          this is an Angular template
           <react-wrapper [component]="NumberDisplay"></react-wrapper>
         </div>
       </ng-template>
