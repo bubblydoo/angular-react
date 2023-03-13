@@ -8,6 +8,8 @@ import React, {
 } from "react";
 import ReactDOM from "react-dom";
 import { Subscribable, Unsubscribable } from "rxjs";
+import { PassedReactContextToken } from "../passed-react-context-token/passed-react-context-token";
+import { useCreatePassedReactContext } from "../passed-react-context-token/use-create-passed-react-context";
 
 function AngularWrapperWithModule(
   {
@@ -29,7 +31,10 @@ function AngularWrapperWithModule(
   },
   forwardedRef: ForwardedRef<ng.ComponentRef<any>>
 ) {
-  if (!ngComponent) throw new Error("AngularWrapperWithModule needs a component but none was provided");
+  if (!ngComponent)
+    throw new Error(
+      "AngularWrapperWithModule needs a component but none was provided"
+    );
 
   const [componentFactory, setComponentFactory] =
     useState<ng.ComponentFactory<any> | null>(null);
@@ -46,6 +51,8 @@ function AngularWrapperWithModule(
     if (hasChildren) return document.createElement("div");
     return null;
   }, [hasChildren]);
+
+  const passedReactContext = useCreatePassedReactContext();
 
   /** This effect makes sure event listeners like 'click' are registered when the element is rendered */
   useEffect(() => {
@@ -89,8 +96,18 @@ function AngularWrapperWithModule(
         ngModuleRef.componentFactoryResolver.resolveComponentFactory(
           ngComponent
         );
+
+      // extend the injector with our passed react context
+      // so the nested react-wrappers can access it
+      const injectorForComponent = ng.Injector.create({
+        providers: [
+          { provide: PassedReactContextToken, useValue: passedReactContext },
+        ],
+        parent: ngModuleRef.injector,
+      });
+
       const componentRef = componentFactory.create(
-        ngModuleRef.injector,
+        injectorForComponent,
         projectableNodes,
         node
       );
@@ -109,7 +126,7 @@ function AngularWrapperWithModule(
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ngComponent, ngModuleRef]
+    [ngComponent, ngModuleRef, passedReactContext]
   );
 
   useEffect(() => {

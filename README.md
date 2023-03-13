@@ -232,24 +232,7 @@ class MessageComponent {
 
 ### Context Bridging
 
-If you're using `react-wrapper`, all context is lost by default. In apps with deep nesting, you can solve this by using `AngularReactRootContextBridge`.
-
-```tsx
-<NumberContext.Provider value={42}>
-  <AngularReactRootContextBridge />
-  {/* angular wrappers with nested react wrappers */}
-</NumberContext.Provider>
-```
-
-`AngularReactRootContextBridge` will register a `ContextBridge` on `angularReactService.wrappers`. This means that all context that is available where you inserted the `AngularReactRootContextBridge` is also available in each `react-wrapper`.
-
-Because Angular doesn't have contexts, there can only be one `AngularReactRootContextBridge` in your app, which will be a global context.
-
-Note: if you're using `AngularReactRootContextBridge` in a React element that's loaded by `react-wrapper`, make sure this `react-wrapper` has the `[ignoreWrappers]="true"` input. Otherwise your components will keep rerendering.
-
-Other options:
-- Put all context on `angularReactService.wrappers` (see above). This is not ideal, because there can only be one global context.
-- Use `useContextBridge` from `its-fine` and wrap all React components in a `<ContextBridge>`. (quite difficult)
+Contexts are bridged automatically using this library, using [its-fine](https://github.com/pmndrs/its-fine).
 
 ## Developing
 

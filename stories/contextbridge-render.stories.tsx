@@ -63,10 +63,7 @@ function App() {
 }
 
 @Component({
-  template: `<react-wrapper
-    [component]="App"
-    [ignoreWrappers]="true"
-  ></react-wrapper>`,
+  template: `<react-wrapper [component]="App"></react-wrapper>`,
 })
 class OuterAngularComponent {
   App = App;

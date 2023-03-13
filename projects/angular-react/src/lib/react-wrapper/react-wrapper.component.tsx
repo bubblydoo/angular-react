@@ -1,20 +1,24 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
   Input,
   NgModuleRef,
   OnChanges,
   OnDestroy,
+  Optional,
 } from "@angular/core";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { delay } from "rxjs/operators";
 import { AngularModuleContextProvider } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
 import { nestWrappers } from "../nest-wrappers/nest-wrappers";
+import {
+  PassedReactContextToken,
+  PassedReactContext,
+} from "../passed-react-context-token/passed-react-context-token";
 
 @Component({
   selector: "react-wrapper",
@@ -28,14 +32,12 @@ export class ReactWrapperComponent
   props: any = {};
   @Input()
   component: React.ElementType | null = null;
-  @Input()
-  ignoreWrappers = false;
 
   private viewInited = false;
   // this subscription is needed for the context bridge, see
   // https://github.com/pmndrs/its-fine/issues/26#issuecomment-1466107714
-  private renderSubscription = this.angularReactService.render$.subscribe(
-    () => !this.ignoreWrappers && this.viewInited && this.render()
+  private renderSubscription = this.passedReactContext?.render$.subscribe(
+    () => this.viewInited && this.render()
   );
 
   private reactDomRoot: ReactDOM.Root | null = null;
@@ -43,7 +45,10 @@ export class ReactWrapperComponent
   constructor(
     private ngModuleRef: NgModuleRef<any>,
     private angularReactService: AngularReactService,
-    private elementRef: ElementRef<HTMLElement>
+    private elementRef: ElementRef<HTMLElement>,
+    @Optional()
+    @Inject(PassedReactContextToken)
+    private passedReactContext?: PassedReactContext
   ) {}
 
   ngAfterViewInit() {
@@ -59,7 +64,7 @@ export class ReactWrapperComponent
 
   ngOnDestroy() {
     this.reactDomRoot?.unmount();
-    this.renderSubscription.unsubscribe();
+    this.renderSubscription?.unsubscribe();
   }
 
   private render() {
@@ -68,9 +73,11 @@ export class ReactWrapperComponent
 
     if (!this.reactDomRoot) return;
 
-    const wrappers = this.ignoreWrappers
-      ? []
-      : this.angularReactService.wrappers;
+    let wrappers = this.angularReactService.wrappers;
+
+    if (this.passedReactContext) {
+      wrappers = [...wrappers, this.passedReactContext.ContextBridge];
+    }
 
     this.reactDomRoot.render(
       <AngularModuleContextProvider moduleRef={this.ngModuleRef}>

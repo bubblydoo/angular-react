@@ -10,37 +10,76 @@ import { Meta, moduleMetadata } from "@storybook/angular";
 import React, { useState } from "react";
 import {
   AngularReactModule,
-  AngularReactRootContextBridge,
   useFromAngularTemplateRef,
-  AngularWrapper
+  AngularWrapper,
 } from "../projects/angular-react/src/public-api";
 import { NumberContext, NumberDisplay } from "./common/number";
 
-function A(props: { tmpl: TemplateRef<{}> }) {
+@Component({
+  selector: "inner2",
+  template: `
+    <div style="border: 1px solid; padding: 5px; margin: 5px">
+      this is Angular (react context is bound to the AngularWrapper)
+      <react-wrapper [component]="NumberDisplay"></react-wrapper>
+    </div>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class Inner2Component {
+  NumberDisplay = NumberDisplay;
+}
+
+function TemplateOutlet(props: { tmpl: TemplateRef<{}> }) {
   const Template = useFromAngularTemplateRef(props.tmpl);
 
-  return <Template />
+  return <Template />;
+}
+
+function TemplateOutletAndDisplay(props: { tmpl: TemplateRef<{}> }) {
+  const Template = useFromAngularTemplateRef(props.tmpl);
+
+  return (
+    <>
+      <Template />
+      <TemplateOutlet tmpl={props.tmpl} />
+      <NumberContext.Consumer>
+        {(number) => (
+          <div style={{ border: "1px solid", padding: "5px", margin: "5px" }}>
+            <NumberContext.Provider value={number! + 1}>
+              inside this context it's number + 1 = {number! + 1},
+              <Template />
+              <TemplateOutlet tmpl={props.tmpl} />
+              <AngularWrapper component={Inner2Component} />
+            </NumberContext.Provider>
+          </div>
+        )}
+      </NumberContext.Consumer>
+    </>
+  );
 }
 
 @Component({
   selector: "inner",
   template: `
     <div style="border: 1px solid; padding: 5px; margin: 5px">
-      this is Angular
+      this is Angular (react context is bound to the AngularWrapper)
       <ng-template #tmpl>
         <div style="border: 1px solid; padding: 5px; margin: 5px">
-          this is an Angular template
+          this is an Angular template (react context is bound to the react-wrapper until Angular 14)
           <react-wrapper [component]="NumberDisplay"></react-wrapper>
         </div>
       </ng-template>
-      <react-wrapper [component]="A" [props]="{ tmpl }"></react-wrapper>
+      <react-wrapper
+        [component]="TemplateOutletAndDisplay"
+        [props]="{ tmpl }"
+      ></react-wrapper>
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class InnerComponent {
   NumberDisplay = NumberDisplay;
-  A = A;
+  TemplateOutletAndDisplay = TemplateOutletAndDisplay;
 
   @Input() message!: string;
 
@@ -49,19 +88,19 @@ class InnerComponent {
 
 function App() {
   const [number, setNumber] = useState(42);
-  return <NumberContext.Provider value={number}>
-    <button onClick={() => setNumber(number + 1)}>increment</button>
-    <AngularReactRootContextBridge />
-    <NumberDisplay/>
-    <AngularWrapper component={InnerComponent} />
-  </NumberContext.Provider>
+  return (
+    <NumberContext.Provider value={number}>
+      <button onClick={() => setNumber(number + 1)}>increment</button>
+      <NumberDisplay />
+      <AngularWrapper component={InnerComponent} />
+    </NumberContext.Provider>
+  );
 }
-
 
 @Component({
   selector: "outer",
-  template: `<react-wrapper [component]="App" [ignoreWrappers]="true"></react-wrapper>`,
-  changeDetection: ChangeDetectionStrategy.OnPush
+  template: `<react-wrapper [component]="App"></react-wrapper>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class OuterComponent {
   App = App;
@@ -75,7 +114,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [CommonModule, AngularReactModule],
-      declarations: [OuterComponent, InnerComponent],
+      declarations: [OuterComponent, InnerComponent, Inner2Component],
       providers: [ChangeDetectorRef, { provide: APP_BASE_HREF, useValue: "/" }],
     }),
   ],

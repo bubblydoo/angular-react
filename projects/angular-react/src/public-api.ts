@@ -13,7 +13,7 @@ import useObservable from './lib/use-observable/use-observable';
 export * from "./lib/templates/angular-template-outlet";
 export * from "./lib/templates/react-to-template-ref.component";
 export * from "./lib/templates/template-outlet.component";
-export * from "./lib/templates/use-angular-template-ref";
-export * from "./lib/angular-react-root-context-bridge/angular-react-root-context-bridge";
+export * from "./lib/templates/use-to-angular-template-ref";
+export * from "./lib/passed-react-context-token/passed-react-context-token";
 
 export { AngularWrapper, AngularWrapperWithModule, useInjected, useObservable };

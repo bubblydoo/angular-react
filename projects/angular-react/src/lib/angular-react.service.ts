@@ -11,7 +11,4 @@ export class AngularReactService {
 
   /** Wrappers used to encapsulate all components passed to react-wrapper */
   wrappers: Wrapper[] = [];
-
-  /** Trigger a `root.render()` in all react-wrapper components. Needed to sync the context bridges. */
-  render$ = new Subject<void>();
 }

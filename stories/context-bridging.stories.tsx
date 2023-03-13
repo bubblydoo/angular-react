@@ -1,19 +1,15 @@
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component, ViewChild } from "@angular/core";
 import { Meta, moduleMetadata } from "@storybook/angular";
-import { FiberProvider, useContextBridge } from "its-fine";
-import React, { useContext, useEffect, useReducer, useState } from "react";
+import React, { useState } from "react";
 import {
   AngularWrapper,
   AngularReactModule,
   ReactWrapperComponent,
-  AngularReactRootContextBridge,
   useInjected,
   AngularReactService,
 } from "../projects/angular-react/src/public-api";
 import { NumberContext, NumberDisplay } from "./common/number";
-
-
 
 @Component({
   selector: "inner-angular",
@@ -37,8 +33,6 @@ function App() {
       <NumberContext.Provider value={number}>
         <div>this is React</div>
         <button onClick={() => setNumber((n) => n + 1)}>increment</button>
-        {/* <button onClick={() => angularReact.render$.next()}>call angularReact.render$.next()</button> */}
-        <AngularReactRootContextBridge />
         <NumberDisplay />
         <AngularWrapper component={AngularNumberComponent} />
       </NumberContext.Provider>
@@ -47,7 +41,7 @@ function App() {
 }
 
 @Component({
-  template: `<react-wrapper [component]="App" [ignoreWrappers]="true"></react-wrapper>`,
+  template: `<react-wrapper [component]="App"></react-wrapper>`,
 })
 class OuterAngularComponent {
   App = App;

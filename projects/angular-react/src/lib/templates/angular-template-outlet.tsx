@@ -1,7 +1,7 @@
 // TODO: move to @bubblydoo/angular-react
 import { type NgModuleRef, type TemplateRef } from '@angular/core';
+import { useContextBridge } from 'its-fine';
 import React, { useCallback, useMemo, useContext } from "react";
-import { scan } from 'rxjs';
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
 import AngularWrapper from "../angular-wrapper/angular-wrapper";
@@ -26,7 +26,7 @@ export function AngularTemplateOutlet({ tmpl, tmplContext }: Props) {
   );
 }
 
-export const useFromAngularTemplateRefWithModule = (
+export const useFromAngularTemplateRefFnWithModule = (
   moduleRef: NgModuleRef<any>
 ) => {
   const angularReactService = useInjected(AngularReactService);
@@ -36,9 +36,13 @@ export const useFromAngularTemplateRefWithModule = (
     );
 
   return useCallback(
-    (tmpl: TemplateRef<any>, tmplContext: Record<string, any> = {}) => {
+    function FromAngularTemplateRef(tmpl: TemplateRef<any>, tmplContext: Record<string, any> = {}) {
+      const ContextBridge = useContextBridge();
+
+      const wrappers = [ContextBridge, ...angularReactService.wrappers];
+
       return nestWrappers(
-        angularReactService.wrappers,
+        wrappers,
         <AngularTemplateOutlet tmpl={tmpl} tmplContext={tmplContext} />
       );
     },
@@ -49,7 +53,7 @@ export const useFromAngularTemplateRefWithModule = (
 export const useFromAngularTemplateRefFn = () => {
   const moduleRef = useContext(AngularModuleContext);
   if (!moduleRef) throw new Error("No AngularModuleContext");
-  return useFromAngularTemplateRefWithModule(moduleRef);
+  return useFromAngularTemplateRefFnWithModule(moduleRef);
 };
 
 export function useFromAngularTemplateRef<C extends Record<string, any>>(
