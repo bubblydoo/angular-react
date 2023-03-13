@@ -1,5 +1,5 @@
 import { NgModuleRef } from "@angular/core";
-import { useContextBridge } from "its-fine";
+import { FiberProvider, useContextBridge } from "its-fine";
 import React, { useEffect, useLayoutEffect } from "react";
 import { AngularReactService } from "../angular-react.service";
 import useInjected from "../use-injected/use-injected";
@@ -18,9 +18,11 @@ export function AngularModuleContextProvider({
     throw new Error("No moduleRef passed to AngularModuleContextProvider");
 
   return (
-    <AngularModuleContext.Provider value={moduleRef}>
-      {children}
-    </AngularModuleContext.Provider>
+    <FiberProvider>
+      <AngularModuleContext.Provider value={moduleRef}>
+        {children}
+      </AngularModuleContext.Provider>
+    </FiberProvider>
   );
 }
 
