@@ -47,7 +47,7 @@ function ReactComponent() {
 }
 
 export default {
-  title: "NgZone Handling",
+  title: "Research/NgZone Handling",
   component: OuterAngularComponent,
   decorators: [
     moduleMetadata({

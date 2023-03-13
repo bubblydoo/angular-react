@@ -5,7 +5,7 @@ import React, { useMemo } from "react";
 import {
   AngularWrapper,
   AngularReactModule,
-  useAngularTemplateRef
+  useToAngularTemplateRef
 } from "../projects/angular-react/src/public-api";
 
 @Component({
@@ -26,7 +26,7 @@ function Text(props: { message: string }) {
 }
 
 function Message(props: { message: string }) {
-  const tmpl = useAngularTemplateRef(Text);
+  const tmpl = useToAngularTemplateRef(Text);
 
   const inputs = useMemo(() => ({
     message: props.message,
@@ -49,7 +49,7 @@ class OuterAngularComponent {
 
 
 export default {
-  title: "To Angular TemplateRef",
+  title: "Templates/To Angular TemplateRef",
   component: OuterAngularComponent,
   decorators: [
     moduleMetadata({

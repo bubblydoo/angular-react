@@ -22,7 +22,7 @@ function Message(props: {
 }
 
 @Component({
-  selector: "outer",
+  selector: "message",
   template: `
     <ng-template #tmpl let-message="message">{{ message }}</ng-template>
     <div>
@@ -40,7 +40,7 @@ class MessageComponent {
 }
 
 export default {
-  title: "From Angular TemplateRef",
+  title: "Templates/From Angular TemplateRef",
   component: MessageComponent,
   decorators: [
     moduleMetadata({

@@ -29,7 +29,7 @@ class MessageComponent {
 }
 
 export default {
-  title: "Ref",
+  title: "Basics/Using Ref",
   component: MessageComponent,
   decorators: [
     moduleMetadata({

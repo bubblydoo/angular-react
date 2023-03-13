@@ -46,7 +46,7 @@ function Time({ time }: { time: number }) {
 }
 
 export default {
-  title: "Nested Wrappers",
+  title: "Basics/Nested Wrappers",
   component: AngularComponent,
   decorators: [
     moduleMetadata({

@@ -1,6 +1,6 @@
 import { type NgModuleRef } from "@angular/core";
 import React, { useContext, useMemo } from "react";
-import { AngularModuleContext } from "../angular-module-context/angular-module-context";
+import { AngularModuleContext, AngularModuleContextProvider } from "../angular-module-context/angular-module-context";
 
 export function addAngularModuleContext<
   P extends {},
@@ -11,9 +11,9 @@ export function addAngularModuleContext<
 
   const addAngularModuleContextHOC = (props: any) => {
     return (
-      <AngularModuleContext.Provider value={moduleRef}>
+      <AngularModuleContextProvider moduleRef={moduleRef}>
         <Component {...props} />
-      </AngularModuleContext.Provider>
+      </AngularModuleContextProvider>
     );
   };
 

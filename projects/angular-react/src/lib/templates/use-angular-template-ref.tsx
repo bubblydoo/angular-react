@@ -12,18 +12,18 @@ import { AngularModuleContext } from '../angular-module-context/angular-module-c
 import { ReactToTemplateRefComponent } from './react-to-template-ref.component';
 import { useContextBridge } from 'its-fine';
 
-export function useAngularTemplateRef<C>(
+export function useToAngularTemplateRef<C>(
   Component: (props: C) => any
 ): TemplateRef<C> | undefined {
   const moduleRef = useContext(AngularModuleContext);
   if (!moduleRef)
     throw new Error(
-      'useAngularTemplate must be used within an AngularModuleContext'
+      'useToAngularTemplateRef must be used within an AngularModuleContext'
     );
-  return useAngularTemplateRefWithModule(Component, moduleRef);
+  return useToAngularTemplateRefWithModule(Component, moduleRef);
 }
 
-export function useAngularTemplateRefWithModule<C>(
+export function useToAngularTemplateRefWithModule<C>(
   Component: (props: C) => any,
   ngModuleRef: NgModuleRef<any>
 ): TemplateRef<C> | undefined {

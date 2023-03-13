@@ -37,7 +37,7 @@ function ReactComponent() {
 }
 
 export default {
-  title: "Angular in React in Angular Showcase",
+  title: "Basics/Angular in React in Angular Showcase",
   component: OuterAngularComponent,
   decorators: [
     moduleMetadata({

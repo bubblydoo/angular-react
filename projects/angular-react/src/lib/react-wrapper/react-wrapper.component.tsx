@@ -1,21 +1,25 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
   NgModuleRef,
   OnChanges,
   OnDestroy,
-} from '@angular/core';
-import * as React from 'react';
-import * as ReactDOM from 'react-dom/client';
-import { AngularModuleContext } from '../angular-module-context/angular-module-context';
-import { AngularReactService } from '../angular-react.service';
-import { nestWrappers } from '../nest-wrappers/nest-wrappers';
+} from "@angular/core";
+import * as React from "react";
+import * as ReactDOM from "react-dom/client";
+import { delay } from "rxjs/operators";
+import { AngularModuleContextProvider } from "../angular-module-context/angular-module-context";
+import { AngularReactService } from "../angular-react.service";
+import { nestWrappers } from "../nest-wrappers/nest-wrappers";
 
 @Component({
-  selector: 'react-wrapper',
-  template: '',
+  selector: "react-wrapper",
+  template: "",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReactWrapperComponent
   implements OnChanges, OnDestroy, AfterViewInit
@@ -24,6 +28,15 @@ export class ReactWrapperComponent
   props: any = {};
   @Input()
   component: React.ElementType | null = null;
+  @Input()
+  ignoreWrappers = false;
+
+  private viewInited = false;
+  // this subscription is needed for the context bridge, see
+  // https://github.com/pmndrs/its-fine/issues/26#issuecomment-1466107714
+  private renderSubscription = this.angularReactService.render$.subscribe(
+    () => !this.ignoreWrappers && this.viewInited && this.render()
+  );
 
   private reactDomRoot: ReactDOM.Root | null = null;
 
@@ -34,7 +47,8 @@ export class ReactWrapperComponent
   ) {}
 
   ngAfterViewInit() {
-    if (!this.elementRef) throw new Error('No element ref');
+    this.viewInited = true;
+    if (!this.elementRef) throw new Error("No element ref");
     this.reactDomRoot = ReactDOM.createRoot(this.elementRef.nativeElement);
     this.render();
   }
@@ -45,20 +59,23 @@ export class ReactWrapperComponent
 
   ngOnDestroy() {
     this.reactDomRoot?.unmount();
+    this.renderSubscription.unsubscribe();
   }
 
   private render() {
     if (!this.component)
-      throw new Error('react-wrapper needs a component but none was passed');
+      throw new Error("react-wrapper needs a component but none was passed");
 
     if (!this.reactDomRoot) return;
 
-    const wrappers = this.angularReactService.wrappers;
+    const wrappers = this.ignoreWrappers
+      ? []
+      : this.angularReactService.wrappers;
 
     this.reactDomRoot.render(
-      <AngularModuleContext.Provider value={this.ngModuleRef}>
+      <AngularModuleContextProvider moduleRef={this.ngModuleRef}>
         {nestWrappers(wrappers, <this.component {...this.props} />)}
-      </AngularModuleContext.Provider>
+      </AngularModuleContextProvider>
     );
   }
 }

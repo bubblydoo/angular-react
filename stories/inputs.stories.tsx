@@ -34,7 +34,7 @@ function ReactComponent() {
 }
 
 export default {
-  title: "Inputs Handling",
+  title: "Basics/Inputs Handling",
   component: OuterAngularComponent,
   decorators: [
     moduleMetadata({
