@@ -28,7 +28,7 @@ export function AngularModuleContextProvider({
 
 let teardownTimes = 0;
 
-export function useAngularReactRootCOntextBridge() {
+export function useAngularReactRootContextBridge() {
   const ContextBridge = useContextBridge();
   const angularReact = useInjected(AngularReactService);
 
@@ -66,7 +66,7 @@ export function useAngularReactRootCOntextBridge() {
 }
 
 export function AngularReactRootContextBridge() {
-  useAngularReactRootCOntextBridge();
+  useAngularReactRootContextBridge();
 
   return null;
 }
