@@ -10699,14 +10699,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"its-fine@npm:^1.0.10":
-  version: 1.0.10
-  resolution: "its-fine@npm:1.0.10"
+"its-fine@npm:@bubblydoo/its-fine@^1.0.10-bubblydoo.0":
+  version: 1.0.10-bubblydoo.0
+  resolution: "@bubblydoo/its-fine@npm:1.0.10-bubblydoo.0"
   dependencies:
     "@types/react-reconciler": ^0.28.0
   peerDependencies:
     react: ">=18.0"
-  checksum: 825e90d1dc0e601f188004fb4731f3d4b8093b0d33d50dfd115b740dda6517b8432b109407d75e08f528c04cc6a5763ee5e2ddc3f6d5e24aa15e75800702d69a
+  checksum: 0430e647c18dd192dc557f9fceb5f8e8b188fcdfbbe71e0981266aa3865727d6627679abed046167c64f67fd5e9c26a10aae7d9d7ddc9491399262bdd272fd8d
   languageName: node
   linkType: hard
 

@@ -56,6 +56,7 @@
   "resolutions": {
     "@types/react@^16.14.23": "^18.0.21",
     "@types/react-dom@^16.9.14": "^18.0.6",
-    "@angular/compiler-cli@^14": "patch:@angular/compiler-cli@npm%3A14.3.0#./.yarn/patches/@angular-compiler-cli-npm-14.3.0-340f59f610.patch"
+    "@angular/compiler-cli@^14": "patch:@angular/compiler-cli@npm%3A14.3.0#./.yarn/patches/@angular-compiler-cli-npm-14.3.0-340f59f610.patch",
+    "its-fine@^1.0.10": "npm:@bubblydoo/its-fine@^1.0.10-bubblydoo.0"
   }
 }

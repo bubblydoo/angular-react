@@ -165,6 +165,31 @@ export class MessageComponent {
 }
 ```
 
+### Reading React contexts in Angular
+
+```tsx
+@Component({
+  selector: "inner",
+  template: `number: {{ number$ | async }}`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+class InnerComponent {
+  number$ = this.contexts.read(NumberContext);
+
+  constructor(@Inject(PassedReactContextToken) public contexts: PassedReactContext) {}
+}
+
+function App() {
+  const [number, setNumber] = useState(42);
+  return (
+    <NumberContext.Provider value={number}>
+      <button onClick={() => setNumber(number + 1)}>increment</button>
+      <AngularWrapper component={InnerComponent} />
+    </NumberContext.Provider>
+  );
+}
+```
+
 ### Using templates
 
 #### `useToAngularTemplateRef`: to convert a React component into a `TemplateRef`
