@@ -115,7 +115,6 @@ function AngularWrapperWithModule(
   useEffect(() => {
     if (!renderedComponent) return;
     if (!componentFactory) return;
-    if (!inputs) return;
 
     // TODO: In Angular 14, there's a new `setInput` method on ComponentRef, which should be used
     for (const [key, value] of Object.entries(inputs || {})) {
