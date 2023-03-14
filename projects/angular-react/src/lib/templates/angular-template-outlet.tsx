@@ -1,6 +1,4 @@
-// TODO: move to @bubblydoo/angular-react
 import { type NgModuleRef, type TemplateRef } from '@angular/core';
-import { useContextBridge } from 'its-fine';
 import React, { useCallback, useMemo, useContext } from "react";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
@@ -37,16 +35,12 @@ export const useFromAngularTemplateRefFnWithModule = (
 
   return useCallback(
     function FromAngularTemplateRef(tmpl: TemplateRef<any>, tmplContext: Record<string, any> = {}) {
-      const ContextBridge = useContextBridge();
-
-      const wrappers = [ContextBridge, ...angularReactService.wrappers];
-
       return nestWrappers(
-        wrappers,
+        angularReactService.wrappers,
         <AngularTemplateOutlet tmpl={tmpl} tmplContext={tmplContext} />
       );
     },
-    [moduleRef]
+    [moduleRef, angularReactService]
   );
 };
 
@@ -62,6 +56,6 @@ export function useFromAngularTemplateRef<C extends Record<string, any>>(
   const fn = useFromAngularTemplateRefFn();
   return useMemo(
     () => (tmplContext: C) => fn(templateRef, tmplContext),
-    [templateRef]
+    [templateRef, fn]
   );
 }
