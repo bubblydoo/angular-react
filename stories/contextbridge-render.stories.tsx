@@ -1,7 +1,7 @@
 import { APP_BASE_HREF, CommonModule } from "@angular/common";
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { Meta, moduleMetadata } from "@storybook/angular";
-import { useContextBridge } from "its-fine";
+import { useContextBridge } from "@bubblydoo/its-fine";
 import React, { useCallback, useEffect, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
 import { Subject } from "rxjs";

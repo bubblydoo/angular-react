@@ -9,7 +9,7 @@ import { TemplateOutletComponent } from "./template-outlet.component";
 
 type Props = {
   tmpl: TemplateRef<any>;
-  tmplContext: Record<string, any>;
+  tmplContext?: Record<string, any>;
 };
 
 export function AngularTemplateOutlet({ tmpl, tmplContext }: Props) {

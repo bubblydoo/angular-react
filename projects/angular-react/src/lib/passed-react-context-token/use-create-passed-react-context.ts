@@ -1,4 +1,4 @@
-import { useAllContexts, useContextBridge } from 'its-fine';
+import { useAllContexts, useContextBridge } from '@bubblydoo/its-fine';
 import { useLayoutEffect, useMemo } from 'react';
 import { distinctUntilChanged, ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs';

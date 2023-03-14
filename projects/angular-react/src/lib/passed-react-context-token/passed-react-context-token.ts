@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { type ContextBridge as ContextBridgeType } from "its-fine";
+import { type ContextBridge as ContextBridgeType } from "@bubblydoo/its-fine";
 import { Context } from 'react';
 import { Observable, Subject } from 'rxjs';
 

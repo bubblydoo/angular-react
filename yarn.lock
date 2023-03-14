@@ -2062,6 +2062,7 @@ __metadata:
     "@angular/platform-browser-dynamic": ^14
     "@angular/router": ^14
     "@babel/core": ^7.19.3
+    "@bubblydoo/its-fine": ^1.0.10-bubblydoo.0
     "@storybook/addon-essentials": ^6.5.12
     "@storybook/angular": ^6.5.12
     "@storybook/builder-webpack5": ^6.5.12
@@ -2073,7 +2074,6 @@ __metadata:
     "@types/react": ^18.0.21
     "@types/react-dom": ^18.0.6
     babel-loader: ^8.2.5
-    its-fine: ^1.0.10
     jasmine-core: ~4.4.0
     karma: ~6.4.1
     karma-chrome-launcher: ~3.1.1
@@ -2089,6 +2089,17 @@ __metadata:
     zone.js: ~0.11.8
   languageName: unknown
   linkType: soft
+
+"@bubblydoo/its-fine@npm:^1.0.10-bubblydoo.0":
+  version: 1.0.10-bubblydoo.0
+  resolution: "@bubblydoo/its-fine@npm:1.0.10-bubblydoo.0"
+  dependencies:
+    "@types/react-reconciler": ^0.28.0
+  peerDependencies:
+    react: ">=18.0"
+  checksum: 0430e647c18dd192dc557f9fceb5f8e8b188fcdfbbe71e0981266aa3865727d6627679abed046167c64f67fd5e9c26a10aae7d9d7ddc9491399262bdd272fd8d
+  languageName: node
+  linkType: hard
 
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
@@ -10696,17 +10707,6 @@ __metadata:
     es-get-iterator: ^1.0.2
     iterate-iterator: ^1.0.1
   checksum: 446a4181657df1872e5020713206806757157db6ab375dee05eb4565b66e1244d7a99cd36ce06862261ad4bd059e66ba8192f62b5d1ff41d788c3b61953af6c3
-  languageName: node
-  linkType: hard
-
-"its-fine@npm:@bubblydoo/its-fine@^1.0.10-bubblydoo.0":
-  version: 1.0.10-bubblydoo.0
-  resolution: "@bubblydoo/its-fine@npm:1.0.10-bubblydoo.0"
-  dependencies:
-    "@types/react-reconciler": ^0.28.0
-  peerDependencies:
-    react: ">=18.0"
-  checksum: 0430e647c18dd192dc557f9fceb5f8e8b188fcdfbbe71e0981266aa3865727d6627679abed046167c64f67fd5e9c26a10aae7d9d7ddc9491399262bdd272fd8d
   languageName: node
   linkType: hard
 
