@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Observable, Subscribable } from 'rxjs';
 
-function useObservable<T = any>(
+export function useObservable<T = any>(
   observable: Observable<T> | Subscribable<T>,
   _default: T | null = null
 ) {
@@ -21,5 +21,3 @@ function useObservable<T = any>(
   }, [observable]);
   return [next, error, complete] as const;
 }
-
-export default useObservable;

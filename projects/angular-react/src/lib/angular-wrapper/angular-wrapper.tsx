@@ -1,7 +1,7 @@
 import { type ComponentRef } from '@angular/core';
-import React, { ForwardedRef, useContext } from 'react';
+import React, { ForwardedRef, forwardRef, useContext } from 'react';
 import { AngularModuleContext } from '../angular-module-context/angular-module-context';
-import AngularWrapperWithModule from '../angular-wrapper-with-module/angular-wrapper-with-module';
+import { AngularWrapperWithModule } from '../angular-wrapper-with-module/angular-wrapper-with-module';
 
 function AngularWrapper(
   props: {
@@ -33,4 +33,6 @@ function AngularWrapper(
   );
 }
 
-export default React.forwardRef(AngularWrapper);
+const AngularWrapperForwardRef = forwardRef(AngularWrapper);
+
+export { AngularWrapperForwardRef as AngularWrapper };

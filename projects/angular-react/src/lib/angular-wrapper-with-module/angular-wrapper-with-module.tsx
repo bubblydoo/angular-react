@@ -1,6 +1,7 @@
 import * as ng from "@angular/core";
 import React, {
   ForwardedRef,
+  forwardRef,
   useCallback,
   useEffect,
   useMemo,
@@ -221,4 +222,7 @@ function AngularWrapperWithModule(
   );
 }
 
-export default React.forwardRef(AngularWrapperWithModule);
+const AngularWrapperWithModuleForwardRef = forwardRef(AngularWrapperWithModule);
+
+export { AngularWrapperWithModuleForwardRef as AngularWrapperWithModule };
+

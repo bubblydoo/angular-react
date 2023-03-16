@@ -2,9 +2,9 @@ import { type NgModuleRef, type TemplateRef } from '@angular/core';
 import React, { useCallback, useMemo, useContext } from "react";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { AngularReactService } from "../angular-react.service";
-import AngularWrapper from "../angular-wrapper/angular-wrapper";
+import { AngularWrapper } from "../angular-wrapper/angular-wrapper";
 import { nestWrappers } from "../nest-wrappers/nest-wrappers";
-import useInjected from "../use-injected/use-injected";
+import { useInjected } from "../use-injected/use-injected";
 import { TemplateOutletComponent } from "./template-outlet.component";
 
 type Props = {
@@ -34,7 +34,10 @@ export const useFromAngularTemplateRefFnWithModule = (
     );
 
   return useCallback(
-    function FromAngularTemplateRef(tmpl: TemplateRef<any>, tmplContext: Record<string, any> = {}) {
+    function FromAngularTemplateRef(
+      tmpl: TemplateRef<any>,
+      tmplContext: Record<string, any> = {}
+    ) {
       return nestWrappers(
         angularReactService.wrappers,
         <AngularTemplateOutlet tmpl={tmpl} tmplContext={tmplContext} />

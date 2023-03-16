@@ -8,7 +8,7 @@ type ProviderTokenTypeHelper<T> = T extends ProviderToken<T>
   ? ProviderToken<T>
   : PublicInterface<ProviderToken<T>>;
 
-function useInjected<T = any>(
+export function useInjected<T = any>(
   token: ProviderTokenTypeHelper<T>,
   notFoundValue?: T,
   flags?: InjectFlags
@@ -19,5 +19,3 @@ function useInjected<T = any>(
   const injector = ngModuleRef.injector;
   return injector.get(token as ProviderToken<T>, notFoundValue, flags);
 }
-
-export default useInjected;
