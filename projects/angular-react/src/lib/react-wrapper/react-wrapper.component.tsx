@@ -68,7 +68,8 @@ export class ReactWrapperComponent
   }
 
   ngOnDestroy() {
-    this.reactDomRoot?.unmount();
+    // wait one microtask to make sure that the react component is done rendering (logs errors otherwise)
+    Promise.resolve().then(() => this.reactDomRoot?.unmount());
     this.renderSubscription?.unsubscribe();
   }
 
