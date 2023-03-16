@@ -9,6 +9,8 @@ import {
   OnChanges,
   OnDestroy,
   Optional,
+  TemplateRef,
+  ViewChild
 } from "@angular/core";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
@@ -19,10 +21,11 @@ import {
   PassedReactContextToken,
   PassedReactContext,
 } from "../passed-react-context-token/passed-react-context-token";
+import { AngularTemplateOutlet } from "../templates/angular-template-outlet";
 
 @Component({
   selector: "react-wrapper",
-  template: "",
+  template: "<ng-template #children><ng-content></ng-content></ng-template>",
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReactWrapperComponent
@@ -32,6 +35,8 @@ export class ReactWrapperComponent
   props: any = {};
   @Input()
   component: React.ElementType | null = null;
+
+  @ViewChild('children') childrenTmpl!: TemplateRef<any>;
 
   private viewInited = false;
   // this subscription is needed for the context bridge, see
@@ -79,9 +84,11 @@ export class ReactWrapperComponent
       wrappers = [...wrappers, this.passedReactContext.ContextBridge];
     }
 
+    const children = this.props.children ? undefined : <AngularTemplateOutlet tmpl={this.childrenTmpl} />;
+
     this.reactDomRoot.render(
       <AngularModuleContextProvider moduleRef={this.ngModuleRef}>
-        {nestWrappers(wrappers, <this.component {...this.props} />)}
+        {nestWrappers(wrappers, <this.component {...this.props}>{children}</this.component>)}
       </AngularModuleContextProvider>
     );
   }
