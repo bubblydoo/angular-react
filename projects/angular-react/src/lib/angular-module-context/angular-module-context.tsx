@@ -1,5 +1,5 @@
 import { NgModuleRef } from "@angular/core";
-import { FiberProvider } from "@bubblydoo/its-fine";
+import { FiberProvider } from "its-fine";
 import React from "react";
 
 export const AngularModuleContext =

@@ -1,6 +1,6 @@
 {
   "name": "@bubblydoo/angular-react",
-  "version": "0.3.0-beta.2",
+  "version": "0.3.0-beta.3",
   "license": "MIT",
   "author": "Hans Otto Wirtz <hansottowirtz@gmail.com>",
   "homepage": "https://github.com/bubblydoo/angular-react#readme",
@@ -11,7 +11,7 @@
   "peerDependencies": {
     "@angular/common": ">14.0.0",
     "@angular/core": ">14.0.0",
-    "@bubblydoo/its-fine": "^1.0.10-bubblydoo.0"
+    "its-fine": "^1.1.0"
   },
   "dependencies": {
     "tslib": "^2.3.0"

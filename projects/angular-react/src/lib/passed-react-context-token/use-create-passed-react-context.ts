@@ -1,4 +1,4 @@
-import { useAllContexts, useContextBridge } from '@bubblydoo/its-fine';
+import { useContextMap, useContextBridge, ContextMap } from 'its-fine';
 import { useLayoutEffect, useMemo } from 'react';
 import { distinctUntilChanged, ReplaySubject, Subject } from 'rxjs';
 import { map } from 'rxjs';
@@ -6,12 +6,12 @@ import { PassedReactContext } from './passed-react-context-token';
 
 /** Creates a PassedReactContext, which is a ContextBridge and a render observable */
 export function useCreatePassedReactContext() {
-  const contexts = useAllContexts();
+  const contextMap = useContextMap();
   const ContextBridge = useContextBridge();
   const render$ = useMemo(() => new Subject<void>(), []);
-  const all$ = useMemo(() => new ReplaySubject<Map<any, any>>(1), []);
+  const all$ = useMemo(() => new ReplaySubject<ContextMap>(1), []);
 
-  all$.next(contexts);
+  all$.next(contextMap);
 
   const passedReactContext: PassedReactContext = useMemo(
     () => ({

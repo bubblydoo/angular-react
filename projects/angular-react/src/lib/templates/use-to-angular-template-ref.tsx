@@ -3,7 +3,7 @@ import React from "react";
 import { useContext, useState, useEffect } from "react";
 import { AngularModuleContext } from "../angular-module-context/angular-module-context";
 import { ReactToTemplateRefComponent } from "./react-to-template-ref.component";
-import { useContextBridge } from "@bubblydoo/its-fine";
+import { useContextBridge } from "its-fine";
 import {
   PassedReactContext,
   PassedReactContextToken,
