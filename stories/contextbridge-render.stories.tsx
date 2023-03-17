@@ -10,6 +10,8 @@ import { NumberContext, NumberDisplay } from "./common/number";
 
 const render$ = new Subject<void>();
 
+(window as any).render$ = render$;
+
 function Canvas({ Component }: { Component: any }) {
   const [el, setEl] = useState<HTMLDivElement>();
   const [root, setRoot] = useState<Root>();
@@ -38,13 +40,9 @@ function Canvas({ Component }: { Component: any }) {
   );
 
   useEffect(() => {
-    render();
-  }, [render]);
-
-  useEffect(() => {
     const subscription = render$.subscribe(render);
     return () => subscription.unsubscribe();
-  });
+  }, [render, render$]);
 
   return <div ref={(el) => el && setEl(el)}></div>;
 }
