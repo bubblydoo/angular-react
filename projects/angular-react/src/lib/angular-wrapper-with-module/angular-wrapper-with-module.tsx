@@ -4,6 +4,7 @@ import React, {
   forwardRef,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useState,
 } from "react";
@@ -32,7 +33,7 @@ function AngularWrapperWithModule(
     outputs?: Record<string, (value: any) => any>;
     children?: any;
   },
-  forwardedRef: ForwardedRef<ng.ComponentRef<any>>
+  ref: ForwardedRef<ng.ComponentRef<any> | null>
 ) {
   if (!ngComponent)
     throw new Error(
@@ -53,6 +54,8 @@ function AngularWrapperWithModule(
     useState<ng.ComponentRef<any> | null>(null);
   const [renderedElement, setRenderedElement] =
     useState<HTMLElement | null>(null);
+
+  useImperativeHandle(ref, () => renderedComponent!, [renderedComponent]);
 
   // TODO: for more compat see @angular/elements
   // https://github.com/angular/angular/blob/4332897baa2226ef246ee054fdd5254e3c129109/packages/elements/src/component-factory-strategy.ts#L200
@@ -128,12 +131,6 @@ function AngularWrapperWithModule(
 
       setComponentFactory(componentFactory);
       setRenderedComponentRef(componentRef);
-
-      if (forwardedRef) {
-        typeof forwardedRef === "function"
-          ? forwardedRef(componentRef)
-          : (forwardedRef.current = componentRef);
-      }
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
