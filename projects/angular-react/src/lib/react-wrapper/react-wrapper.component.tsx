@@ -4,17 +4,19 @@ import {
   Component,
   ElementRef,
   Inject,
+  InjectFlags,
+  Injector,
   Input,
   NgModuleRef,
   OnChanges,
   OnDestroy,
   Optional,
   TemplateRef,
-  ViewChild
+  ViewChild,
 } from "@angular/core";
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
-import { AngularModuleContextProvider } from "../angular-module-context/angular-module-context";
+import { RootAngularContextProvider } from "../angular-context/angular-context";
 import { AngularReactService } from "../angular-react.service";
 import { nestWrappers } from "../nest-wrappers/nest-wrappers";
 import {
@@ -36,7 +38,7 @@ export class ReactWrapperComponent
   @Input()
   component: React.ElementType | null = null;
 
-  @ViewChild('children') childrenTmpl!: TemplateRef<any>;
+  @ViewChild("children") childrenTmpl!: TemplateRef<any>;
 
   private viewInited = false;
   // this subscription is needed for the context bridge, see
@@ -49,6 +51,7 @@ export class ReactWrapperComponent
 
   constructor(
     private ngModuleRef: NgModuleRef<any>,
+    private ngInjector: Injector,
     private angularReactService: AngularReactService,
     private elementRef: ElementRef<HTMLElement>,
     @Optional()
@@ -85,12 +88,20 @@ export class ReactWrapperComponent
       wrappers = [...wrappers, this.passedReactContext.ContextBridge];
     }
 
-    const children = this.props.children ? undefined : <AngularTemplateOutlet tmpl={this.childrenTmpl} />;
+    const children = this.props.children ? undefined : (
+      <AngularTemplateOutlet tmpl={this.childrenTmpl} />
+    );
 
     this.reactDomRoot.render(
-      <AngularModuleContextProvider moduleRef={this.ngModuleRef}>
-        {nestWrappers(wrappers, <this.component {...this.props}>{children}</this.component>)}
-      </AngularModuleContextProvider>
+      <RootAngularContextProvider
+        moduleRef={this.ngModuleRef}
+        injector={this.ngInjector}
+      >
+        {nestWrappers(
+          wrappers,
+          <this.component {...this.props}>{children}</this.component>
+        )}
+      </RootAngularContextProvider>
     );
   }
 }

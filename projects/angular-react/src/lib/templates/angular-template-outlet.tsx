@@ -1,6 +1,6 @@
 import { type NgModuleRef, type TemplateRef } from '@angular/core';
 import React, { useCallback, useMemo, useContext } from "react";
-import { AngularModuleContext } from "../angular-module-context/angular-module-context";
+import { AngularModuleContext } from "../angular-context/angular-context";
 import { AngularReactService } from "../angular-react.service";
 import { AngularWrapper } from "../angular-wrapper/angular-wrapper";
 import { nestWrappers } from "../nest-wrappers/nest-wrappers";

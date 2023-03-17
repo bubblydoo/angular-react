@@ -1,6 +1,6 @@
 import { InjectFlags, ProviderToken } from '@angular/core';
-import { AngularModuleContext } from '../angular-module-context/angular-module-context';
 import { useContext } from 'react';
+import { AngularInjectorContext } from '../angular-context/angular-context';
 
 type PublicInterface<T> = Pick<T, keyof T>;
 
@@ -13,9 +13,8 @@ export function useInjected<T = any>(
   notFoundValue?: T,
   flags?: InjectFlags
 ): T {
-  const ngModuleRef = useContext(AngularModuleContext);
-  if (!ngModuleRef)
+  const injector = useContext(AngularInjectorContext);
+  if (!injector)
     throw new Error('`useInjected` needs to be used inside an Angular context');
-  const injector = ngModuleRef.injector;
   return injector.get(token as ProviderToken<T>, notFoundValue, flags);
 }

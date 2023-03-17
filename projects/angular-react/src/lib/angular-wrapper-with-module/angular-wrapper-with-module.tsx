@@ -17,6 +17,7 @@ function AngularWrapperWithModule(
     name: ngComponentName,
     component: ngComponent,
     moduleRef: ngModuleRef,
+    injector: ngInjector,
     inputs,
     events,
     outputs,
@@ -25,6 +26,7 @@ function AngularWrapperWithModule(
     name?: string;
     component: any;
     moduleRef: ng.NgModuleRef<any>;
+    injector: ng.Injector;
     inputs?: Record<string, any>;
     events?: Record<string, (ev: Event) => any>;
     outputs?: Record<string, (value: any) => any>;
@@ -35,6 +37,14 @@ function AngularWrapperWithModule(
   if (!ngComponent)
     throw new Error(
       "AngularWrapperWithModule needs a component but none was provided"
+    );
+  if (!ngModuleRef)
+    throw new Error(
+      "AngularWrapperWithModule needs a moduleRef but none was provided"
+    );
+  if (!ngInjector)
+    throw new Error(
+      "AngularWrapperWithModule needs an injector but none was provided"
     );
 
   const [componentFactory, setComponentFactory] =
@@ -59,9 +69,9 @@ function AngularWrapperWithModule(
   useEffect(() => {
     if (!events) return;
     if (!renderedElement) return;
-    if (!ngModuleRef) return;
+    if (!ngInjector) return;
 
-    const ngZone = ngModuleRef.injector.get(ng.NgZone);
+    const ngZone = ngInjector.get(ng.NgZone);
 
     const localEl = renderedElement;
 
@@ -84,7 +94,7 @@ function AngularWrapperWithModule(
         localEl.removeEventListener(event, ngZonedEvents[event]);
       }
     };
-  }, [renderedElement, events, ngModuleRef]);
+  }, [renderedElement, events, ngInjector]);
 
   const elRef = useCallback<(node: HTMLElement) => void>(
     async (node) => {
@@ -104,7 +114,7 @@ function AngularWrapperWithModule(
         providers: [
           { provide: PassedReactContextToken, useValue: passedReactContext },
         ],
-        parent: ngModuleRef.injector,
+        parent: ngInjector,
       });
 
       const componentRef = componentFactory.create(
@@ -113,7 +123,7 @@ function AngularWrapperWithModule(
         node
       );
 
-      const appRef = ngModuleRef.injector.get(ng.ApplicationRef);
+      const appRef = ngInjector.get(ng.ApplicationRef);
       appRef.attachView(componentRef.hostView);
 
       setComponentFactory(componentFactory);
@@ -127,7 +137,7 @@ function AngularWrapperWithModule(
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ngComponent, ngModuleRef, passedReactContext]
+    [ngComponent, ngModuleRef, ngInjector, passedReactContext]
   );
 
   useEffect(() => {
@@ -154,9 +164,9 @@ function AngularWrapperWithModule(
     if (!renderedComponent) return;
     if (!componentFactory) return;
     if (!outputs) return;
-    if (!ngModuleRef) return;
+    if (!ngInjector) return;
 
-    const ngZone = ngModuleRef.injector.get(ng.NgZone);
+    const ngZone = ngInjector.get(ng.NgZone);
 
     const subscriptions: Unsubscribable[] = [];
 
@@ -186,7 +196,7 @@ function AngularWrapperWithModule(
         subscription.unsubscribe();
       }
     };
-  }, [renderedComponent, componentFactory, outputs, ngModuleRef]);
+  }, [renderedComponent, componentFactory, outputs, ngInjector]);
 
   useEffect(() => {
     if (!renderedComponent) return;

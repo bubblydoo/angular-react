@@ -1,6 +1,6 @@
 import { type ComponentRef } from '@angular/core';
 import React, { ForwardedRef, forwardRef, useContext } from 'react';
-import { AngularModuleContext } from '../angular-module-context/angular-module-context';
+import { AngularInjectorContext, AngularModuleContext } from '../angular-context/angular-context';
 import { AngularWrapperWithModule } from '../angular-wrapper-with-module/angular-wrapper-with-module';
 
 function AngularWrapper(
@@ -15,14 +15,17 @@ function AngularWrapper(
   forwardedRef: ForwardedRef<ComponentRef<any>>
 ) {
   const moduleRef = useContext(AngularModuleContext);
+  const injector = useContext(AngularInjectorContext);
 
   if (!moduleRef) return <></>;
+  if (!injector) return <></>;
 
   return (
     <AngularWrapperWithModule
       name={props.name}
       component={props.component}
       moduleRef={moduleRef}
+      injector={injector}
       inputs={props.inputs}
       events={props.events}
       outputs={props.outputs}

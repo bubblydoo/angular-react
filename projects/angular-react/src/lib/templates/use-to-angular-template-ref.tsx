@@ -1,7 +1,7 @@
 import * as ng from "@angular/core";
 import React from "react";
 import { useContext, useState, useEffect } from "react";
-import { AngularModuleContext } from "../angular-module-context/angular-module-context";
+import { AngularModuleContext } from "../angular-context/angular-context";
 import { ReactToTemplateRefComponent } from "./react-to-template-ref.component";
 import { useContextBridge } from "its-fine";
 import {
@@ -118,8 +118,8 @@ export async function createReactWrapperTemplateRef<C = any>(
     get elementRef() {
       return origTemplateRef.elementRef;
     },
-    createEmbeddedView(context) {
-      const viewRef = origTemplateRef.createEmbeddedView({ props: context });
+    createEmbeddedView(context, injector) {
+      const viewRef = origTemplateRef.createEmbeddedView({ props: context }, injector);
 
       viewRefs.push(viewRef);
       viewRef.onDestroy(() => {
