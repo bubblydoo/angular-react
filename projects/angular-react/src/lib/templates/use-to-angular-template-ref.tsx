@@ -52,7 +52,7 @@ export function useToAngularTemplateRefWithModule<C>(
       ignore = true;
       controller.abort();
     };
-  }, [ngModuleRef]);
+  }, [ngModuleRef, passedReactContext]);
 
   const ContextBridge = useContextBridge();
 
