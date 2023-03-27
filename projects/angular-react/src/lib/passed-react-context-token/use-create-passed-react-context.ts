@@ -1,6 +1,6 @@
 import { useContextMap, useContextBridge, ContextMap } from 'its-fine';
 import { useLayoutEffect, useMemo } from 'react';
-import { distinctUntilChanged, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, filter, Subject } from 'rxjs';
 import { map } from 'rxjs';
 import { PassedReactContext } from './passed-react-context-token';
 
@@ -9,7 +9,7 @@ export function useCreatePassedReactContext() {
   const contextMap = useContextMap();
   const ContextBridge = useContextBridge();
   const render$ = useMemo(() => new Subject<void>(), []);
-  const all$ = useMemo(() => new ReplaySubject<ContextMap>(1), []);
+  const all$ = useMemo(() => new BehaviorSubject<ContextMap>(contextMap), []);
 
   all$.next(contextMap);
 
@@ -17,7 +17,12 @@ export function useCreatePassedReactContext() {
     () => ({
       ContextBridge,
       render$,
-      read: (x) => all$.pipe(map((contexts) => contexts.get(x)), distinctUntilChanged()),
+      read: (x) =>
+        all$.pipe(
+          map((contexts) => contexts.get(x)),
+          distinctUntilChanged()
+        ),
+      readCurrent: (x) => all$.value?.get(x),
     }),
     [ContextBridge, render$, all$]
   );
