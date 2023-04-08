@@ -17,7 +17,7 @@ export function useInjectableReactContext() {
 
   all$.next(contextMap);
 
-  const pinjectableReactContext: InjectableReactContext = useMemo(
+  const injectableReactContext: InjectableReactContext = useMemo(
     () => ({
       read: (x) =>
         all$.pipe(
@@ -29,5 +29,5 @@ export function useInjectableReactContext() {
     [all$]
   );
 
-  return pinjectableReactContext;
+  return injectableReactContext;
 }
