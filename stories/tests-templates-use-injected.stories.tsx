@@ -55,14 +55,13 @@ function TemplateOutlet(props: { tmpl: TemplateRef<{}> }) {
 
 function TemplateOutletAndDisplay(props: { tmpl: TemplateRef<{}> }) {
   const Template = useFromAngularTemplateRef(props.tmpl);
-  const [angularTemplate, angularPortals] = useToAngularTemplateRef(IntlNumberDisplay);
+  const angularTemplate = useToAngularTemplateRef(IntlNumberDisplay);
 
   return (
     <>
       <Template />
       <TemplateOutlet tmpl={props.tmpl} />
       {angularTemplate && <AngularTemplateOutlet tmpl={angularTemplate} />}
-      {angularPortals}
     </>
   );
 }

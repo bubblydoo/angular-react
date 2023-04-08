@@ -14,5 +14,5 @@ export * from "./lib/templates/angular-template-outlet";
 export * from "./lib/templates/react-to-template-ref.component";
 export * from "./lib/templates/template-outlet.component";
 export * from "./lib/templates/use-to-angular-template-ref";
-export * from "./lib/passed-react-context-token/passed-react-context-token";
-export * from "./lib/passed-react-context-token/use-create-passed-react-context";
+export * from "./lib/injectable-react-context/react-context-token";
+export * from "./lib/injectable-react-context/use-injectable-react-context";

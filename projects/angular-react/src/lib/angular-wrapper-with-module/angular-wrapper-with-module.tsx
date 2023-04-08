@@ -11,9 +11,10 @@ import React, {
 } from "react";
 import ReactDOM from "react-dom";
 import { Subscribable, Unsubscribable } from "rxjs";
-import { PassedReactContextToken } from "../passed-react-context-token/passed-react-context-token";
-import { useCreatePassedReactContext } from "../passed-react-context-token/use-create-passed-react-context";
+import { ReactContextToken } from "../injectable-react-context/react-context-token";
+import { useInjectableReactContext } from "../injectable-react-context/use-injectable-react-context";
 import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
+import { InTreeCreateRootToken } from "../use-in-tree-create-root/in-tree-create-root-token";
 
 function AngularWrapperWithModule(
   {
@@ -68,9 +69,9 @@ function AngularWrapperWithModule(
     return null;
   }, [hasChildren]);
 
-  const mountableCreateRoot = useInTreeCreateRoot();
+  const inTreeCreateRoot = useInTreeCreateRoot();
 
-  const passedReactContext = useCreatePassedReactContext(mountableCreateRoot.createRoot);
+  const passedReactContext = useInjectableReactContext();
 
   /** This effect makes sure event listeners like 'click' are registered when the element is rendered */
   useEffect(() => {
@@ -119,7 +120,8 @@ function AngularWrapperWithModule(
       // so the nested react-wrappers can access it
       const injectorForComponent = ng.Injector.create({
         providers: [
-          { provide: PassedReactContextToken, useValue: passedReactContext },
+          { provide: ReactContextToken, useValue: passedReactContext },
+          { provide: InTreeCreateRootToken, useValue: inTreeCreateRoot.createRoot },
         ],
         parent: ngInjector,
       });
@@ -229,7 +231,7 @@ function AngularWrapperWithModule(
       {React.createElement(componentName, { ref: elRef })}
       {ngContentContainerEl &&
         ReactDOM.createPortal(<>{children}</>, ngContentContainerEl)}
-      {mountableCreateRoot.portals}
+      {inTreeCreateRoot.portals}
     </>
   );
 }
@@ -237,4 +239,3 @@ function AngularWrapperWithModule(
 const AngularWrapperWithModuleForwardRef = forwardRef(AngularWrapperWithModule);
 
 export { AngularWrapperWithModuleForwardRef as AngularWrapperWithModule };
-

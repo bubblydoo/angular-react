@@ -11,8 +11,8 @@ import React, { useState } from "react";
 import {
   AngularReactModule,
   AngularWrapper,
-  PassedReactContextToken,
-  PassedReactContext,
+  ReactContextToken,
+  InjectableReactContext,
 } from "../projects/angular-react/src/public-api";
 import { NumberContext, NumberDisplay } from "./common/number";
 
@@ -29,7 +29,7 @@ import { NumberContext, NumberDisplay } from "./common/number";
 class InnerComponent {
   NumberContext = NumberContext;
 
-  constructor(@Inject(PassedReactContextToken) public contexts: PassedReactContext) {}
+  constructor(@Inject(ReactContextToken) public contexts: InjectableReactContext) {}
 }
 
 function App() {

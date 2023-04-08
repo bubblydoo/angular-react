@@ -63,25 +63,15 @@ const Creator = forwardRef<
   }
 >((props, ref) => {
   useThrowIfNoContext();
-  const [overviewTmpl, overviewPortals] = useToAngularTemplateRef(
-    props.overviewTmpl
-  );
-  const [confirmButtonTmpl, confirmButtonPortals] = useToAngularTemplateRef(
-    props.confirmButtonTmpl
-  );
+  const overviewTmpl = useToAngularTemplateRef(props.overviewTmpl);
+  const confirmButtonTmpl = useToAngularTemplateRef(props.confirmButtonTmpl);
 
   const inputs = useMemo(
     () => ({ overviewTmpl, confirmButtonTmpl }),
     [overviewTmpl, confirmButtonTmpl]
   );
 
-  return (
-    <>
-      <AngularWrapper component={CreatorComponent} inputs={inputs} />
-      {overviewPortals}
-      {confirmButtonPortals}
-    </>
-  );
+  return <AngularWrapper component={CreatorComponent} inputs={inputs} />;
 });
 
 export const CreatorOverview = forwardRef<
@@ -89,7 +79,7 @@ export const CreatorOverview = forwardRef<
   { confirmButtonTmpl: (props: {}) => any }
 >((props, ref) => {
   useThrowIfNoContext();
-  const [confirmButtonTmpl, confirmButtonPortals] = useToAngularTemplateRef(props.confirmButtonTmpl);
+  const confirmButtonTmpl = useToAngularTemplateRef(props.confirmButtonTmpl);
 
   const inputs = useMemo(
     () => ({
@@ -99,10 +89,7 @@ export const CreatorOverview = forwardRef<
   );
 
   return (
-    <>
     <AngularWrapper component={CreatorOverviewComponent} inputs={inputs} />
-    {confirmButtonPortals}
-    </>
   );
 });
 

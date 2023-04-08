@@ -1,40 +1,31 @@
 import * as ng from "@angular/core";
-import React, { ReactPortal } from "react";
+import React from "react";
 import { useContext, useState, useEffect } from "react";
 import { AngularModuleContext } from "../angular-context/angular-context";
 import { ReactToTemplateRefComponent } from "./react-to-template-ref.component";
-import {
-  PassedReactContext,
-  PassedReactContextToken,
-} from "../passed-react-context-token/passed-react-context-token";
-import { useCreatePassedReactContext } from "../passed-react-context-token/use-create-passed-react-context";
-import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
+import { ReactContextToken } from "../injectable-react-context/react-context-token";
+import { InjectableReactContext, useInjectableReactContext } from "../injectable-react-context/use-injectable-react-context";
 
 export function useToAngularTemplateRef<C>(
   Component: (props: C) => any
-): readonly [ng.TemplateRef<C> | undefined, ReactPortal[]] {
+): ng.TemplateRef<C> | undefined {
   const moduleRef = useContext(AngularModuleContext);
   if (!moduleRef)
     throw new Error(
       "useToAngularTemplateRef must be used within an AngularModuleContext"
     );
-  return useToAngularTemplateRefWithModule(
-    Component,
-    moduleRef,
-  );
+  return useToAngularTemplateRefWithModule(Component, moduleRef);
 }
 
 export function useToAngularTemplateRefWithModule<C>(
   Component: (props: C) => any,
   ngModuleRef: ng.NgModuleRef<any>
-): readonly [ng.TemplateRef<C> | undefined, ReactPortal[]] {
+): ng.TemplateRef<C> | undefined {
   const [templateRef, setTemplateRef] = useState<ng.TemplateRef<C>>();
   const [updateComponent, setUpdateComponent] =
     useState<(component: (props: C) => any) => void>();
 
-  const mountableCreateRoot = useInTreeCreateRoot();
-
-  const passedReactContext = useCreatePassedReactContext(mountableCreateRoot.createRoot);
+  const passedReactContext = useInjectableReactContext();
 
   useEffect(() => {
     let ignore = false;
@@ -61,12 +52,12 @@ export function useToAngularTemplateRefWithModule<C>(
     updateComponent((props: any) => <Component {...props} />);
   }, [Component, updateComponent]);
 
-  return [templateRef, mountableCreateRoot.portals] as const;
+  return templateRef;
 }
 
 export async function createReactWrapperTemplateRef<C = any>(
   ngModuleRef: ng.NgModuleRef<any>,
-  passedReactContext?: PassedReactContext,
+  injectableReactContext?: InjectableReactContext,
   abortSignal?: AbortSignal
 ) {
   const el = document.createElement("div");
@@ -79,8 +70,8 @@ export async function createReactWrapperTemplateRef<C = any>(
   // Q: is it needed to put passedReactContext on the injector here,
   // considering we override the injector in AngularTemplateOutlet?
   const injectorForComponent = ng.Injector.create({
-    providers: passedReactContext
-      ? [{ provide: PassedReactContextToken, useValue: passedReactContext }]
+    providers: injectableReactContext
+      ? [{ provide: ReactContextToken, useValue: injectableReactContext }]
       : [],
     parent: ngModuleRef.injector,
   });
@@ -115,7 +106,10 @@ export async function createReactWrapperTemplateRef<C = any>(
       return origTemplateRef.elementRef;
     },
     createEmbeddedView(context, injector) {
-      const viewRef = origTemplateRef.createEmbeddedView({ props: context }, injector);
+      const viewRef = origTemplateRef.createEmbeddedView(
+        { props: context },
+        injector
+      );
 
       viewRefs.push(viewRef);
       viewRef.onDestroy(() => {

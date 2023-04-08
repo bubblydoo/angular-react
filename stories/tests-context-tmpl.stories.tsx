@@ -15,8 +15,8 @@ import {
   AngularWrapper,
   AngularReactModule,
   useToAngularTemplateRef,
-  PassedReactContextToken,
-  PassedReactContext,
+  ReactContextToken,
+  InjectableReactContext,
   useInjected,
 } from "../projects/angular-react/src/public-api";
 import { NumberContext, NumberDisplay } from "./common/number";
@@ -44,13 +44,17 @@ class ThingComponent {
   constructor(
     public injector: Injector,
     @Optional()
-    @Inject(PassedReactContextToken)
-    public passedReactContext: PassedReactContext,
+    @Inject(ReactContextToken)
+    public passedReactContext: InjectableReactContext
   ) {}
 }
 
 const NumberDisplayWithDebug = () => {
-  const passedReactContext = useInjected(PassedReactContextToken, null, InjectFlags.Optional);
+  const passedReactContext = useInjected(
+    ReactContextToken,
+    null,
+    InjectFlags.Optional
+  );
 
   return (
     <>
@@ -61,7 +65,7 @@ const NumberDisplayWithDebug = () => {
 };
 
 function Parent(props: {}) {
-  const [tmpl, tmplPortals] = useToAngularTemplateRef(NumberDisplayWithDebug);
+  const tmpl = useToAngularTemplateRef(NumberDisplayWithDebug);
 
   const inputs = useMemo(() => ({ tmpl }), [tmpl]);
 
@@ -73,7 +77,6 @@ function Parent(props: {}) {
       <NumberContext.Provider value={number}>
         <AngularWrapper component={ThingComponent} inputs={inputs} />
       </NumberContext.Provider>
-      {tmplPortals}
     </>
   );
 }

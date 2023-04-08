@@ -19,11 +19,11 @@ import * as ReactDOM from "react-dom/client";
 import { RootAngularContextProvider } from "../angular-context/angular-context";
 import { AngularReactService } from "../angular-react.service";
 import { nestWrappers } from "../nest-wrappers/nest-wrappers";
-import {
-  PassedReactContextToken,
-  PassedReactContext,
-} from "../passed-react-context-token/passed-react-context-token";
+import { ReactContextToken } from "../injectable-react-context/react-context-token";
 import { AngularTemplateOutlet } from "../templates/angular-template-outlet";
+import { InjectableReactContext } from "../injectable-react-context/use-injectable-react-context";
+import { InTreeCreateRootToken } from "../use-in-tree-create-root/in-tree-create-root-token";
+import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
 
 @Component({
   selector: "react-wrapper",
@@ -41,9 +41,9 @@ export class ReactWrapperComponent
   @ViewChild("children") childrenTmpl!: TemplateRef<any>;
 
   /** Whether this component is where the React root should be created (true if using React-in-Angular) */
-  private isTopLevelReact = !this.passedReactContext;
+  private isTopLevelReact = !this.inTreeCreateRoot;
   private reactCreateRoot: typeof ReactDOM.createRoot =
-    this.passedReactContext?.createRoot || ReactDOM.createRoot;
+    this.inTreeCreateRoot || ReactDOM.createRoot;
   private reactDomRoot: ReactDOM.Root | null = null;
 
   constructor(
@@ -52,8 +52,8 @@ export class ReactWrapperComponent
     private angularReactService: AngularReactService,
     private elementRef: ElementRef<HTMLElement>,
     @Optional()
-    @Inject(PassedReactContextToken)
-    private passedReactContext?: PassedReactContext
+    @Inject(InTreeCreateRootToken)
+    private inTreeCreateRoot?: typeof ReactDOM.createRoot
   ) {}
 
   ngAfterViewInit() {
