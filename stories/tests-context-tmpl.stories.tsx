@@ -31,11 +31,14 @@ import { NumberContext, NumberDisplay } from "./common/number";
           [ngTemplateOutlet]="tmpl"
           [ngTemplateOutletInjector]="injector"
         ></ng-container>
+        <react-wrapper [component]="NumberDisplayWithDebug"></react-wrapper>
       </div>
     </div>
   `,
 })
 class ThingComponent {
+  NumberDisplayWithDebug = NumberDisplayWithDebug;
+
   @Input() tmpl!: TemplateRef<{ message: string }>;
 
   constructor(
@@ -58,7 +61,7 @@ const NumberDisplayWithDebug = () => {
 };
 
 function Parent(props: {}) {
-  const tmpl = useToAngularTemplateRef(NumberDisplayWithDebug);
+  const [tmpl, tmplPortals] = useToAngularTemplateRef(NumberDisplayWithDebug);
 
   const inputs = useMemo(() => ({ tmpl }), [tmpl]);
 
@@ -70,6 +73,7 @@ function Parent(props: {}) {
       <NumberContext.Provider value={number}>
         <AngularWrapper component={ThingComponent} inputs={inputs} />
       </NumberContext.Provider>
+      {tmplPortals}
     </>
   );
 }

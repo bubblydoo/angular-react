@@ -26,14 +26,19 @@ function Text(props: { message: string }) {
 }
 
 function Message(props: { message: string }) {
-  const tmpl = useToAngularTemplateRef(Text);
+  const [tmpl, tmplPortals] = useToAngularTemplateRef(Text);
 
   const inputs = useMemo(() => ({
     message: props.message,
     tmpl
   }), [props.message, tmpl]);
 
-  return <AngularWrapper component={MessageComponent} inputs={inputs} />
+  return (
+    <>
+      <AngularWrapper component={MessageComponent} inputs={inputs} />
+      {tmplPortals}
+    </>
+  );
 }
 
 @Component({

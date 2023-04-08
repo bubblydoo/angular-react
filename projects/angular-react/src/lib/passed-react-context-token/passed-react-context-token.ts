@@ -1,12 +1,11 @@
 import { InjectionToken } from '@angular/core';
-import { type ContextBridge as ContextBridgeType } from "its-fine";
 import { Context } from 'react';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
+import { createRoot as origCreateRoot } from 'react-dom/client';
 
-/** A read function for React contexts, a ContextBridge and a render$ observable */
+/** Read functions for React contexts, and a createRoot function */
 export type PassedReactContext = {
-  ContextBridge: ContextBridgeType;
-  render$: Subject<void>;
+  createRoot: typeof origCreateRoot;
   read: <T>(context: Context<T>) => Observable<T | undefined>;
   readCurrent: <T>(context: Context<T>) => T | undefined;
 };

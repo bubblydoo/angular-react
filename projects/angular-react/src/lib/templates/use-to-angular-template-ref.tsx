@@ -1,18 +1,18 @@
 import * as ng from "@angular/core";
-import React from "react";
+import React, { ReactPortal } from "react";
 import { useContext, useState, useEffect } from "react";
 import { AngularModuleContext } from "../angular-context/angular-context";
 import { ReactToTemplateRefComponent } from "./react-to-template-ref.component";
-import { useContextBridge } from "its-fine";
 import {
   PassedReactContext,
   PassedReactContextToken,
 } from "../passed-react-context-token/passed-react-context-token";
 import { useCreatePassedReactContext } from "../passed-react-context-token/use-create-passed-react-context";
+import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
 
 export function useToAngularTemplateRef<C>(
   Component: (props: C) => any
-): ng.TemplateRef<C> | undefined {
+): readonly [ng.TemplateRef<C> | undefined, ReactPortal[]] {
   const moduleRef = useContext(AngularModuleContext);
   if (!moduleRef)
     throw new Error(
@@ -27,12 +27,14 @@ export function useToAngularTemplateRef<C>(
 export function useToAngularTemplateRefWithModule<C>(
   Component: (props: C) => any,
   ngModuleRef: ng.NgModuleRef<any>
-): ng.TemplateRef<C> | undefined {
+): readonly [ng.TemplateRef<C> | undefined, ReactPortal[]] {
   const [templateRef, setTemplateRef] = useState<ng.TemplateRef<C>>();
   const [updateComponent, setUpdateComponent] =
     useState<(component: (props: C) => any) => void>();
 
-  const passedReactContext = useCreatePassedReactContext();
+  const mountableCreateRoot = useInTreeCreateRoot();
+
+  const passedReactContext = useCreatePassedReactContext(mountableCreateRoot.createRoot);
 
   useEffect(() => {
     let ignore = false;
@@ -54,18 +56,12 @@ export function useToAngularTemplateRefWithModule<C>(
     };
   }, [ngModuleRef, passedReactContext]);
 
-  const ContextBridge = useContextBridge();
-
   useEffect(() => {
     if (!Component || !updateComponent) return;
-    updateComponent((props: any) => (
-      <ContextBridge>
-        <Component {...props} />
-      </ContextBridge>
-    ));
+    updateComponent((props: any) => <Component {...props} />);
   }, [Component, updateComponent]);
 
-  return templateRef;
+  return [templateRef, mountableCreateRoot.portals] as const;
 }
 
 export async function createReactWrapperTemplateRef<C = any>(

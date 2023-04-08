@@ -215,14 +215,19 @@ function Text(props: { message: string }) {
 }
 
 function Message(props: { message: string }) {
-  const tmpl = useToAngularTemplateRef(Text);
+  const [tmpl, tmplPortals] = useToAngularTemplateRef(Text);
 
   const inputs = useMemo(() => ({
     message: props.message,
     tmpl
   }), [props.message, tmpl]);
 
-  return <AngularWrapper component={MessageComponent} inputs={inputs} />
+  return (
+    <>
+      <AngularWrapper component={MessageComponent} inputs={inputs} />
+      {tmplPortals}
+    </>
+  );
 }
 ```
 
@@ -256,10 +261,6 @@ class MessageComponent {
   @Input() message!: string;
 }
 ```
-
-### Context Bridging
-
-Contexts are bridged automatically using this library, using [its-fine](https://github.com/pmndrs/its-fine).
 
 ## Developing
 

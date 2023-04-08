@@ -1,6 +1,7 @@
 import * as ng from "@angular/core";
 import React, {
   ForwardedRef,
+  ReactNode,
   forwardRef,
   useCallback,
   useEffect,
@@ -12,6 +13,7 @@ import ReactDOM from "react-dom";
 import { Subscribable, Unsubscribable } from "rxjs";
 import { PassedReactContextToken } from "../passed-react-context-token/passed-react-context-token";
 import { useCreatePassedReactContext } from "../passed-react-context-token/use-create-passed-react-context";
+import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
 
 function AngularWrapperWithModule(
   {
@@ -66,7 +68,9 @@ function AngularWrapperWithModule(
     return null;
   }, [hasChildren]);
 
-  const passedReactContext = useCreatePassedReactContext();
+  const mountableCreateRoot = useInTreeCreateRoot();
+
+  const passedReactContext = useCreatePassedReactContext(mountableCreateRoot.createRoot);
 
   /** This effect makes sure event listeners like 'click' are registered when the element is rendered */
   useEffect(() => {
@@ -225,6 +229,7 @@ function AngularWrapperWithModule(
       {React.createElement(componentName, { ref: elRef })}
       {ngContentContainerEl &&
         ReactDOM.createPortal(<>{children}</>, ngContentContainerEl)}
+      {mountableCreateRoot.portals}
     </>
   );
 }

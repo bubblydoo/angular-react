@@ -40,13 +40,10 @@ export class ReactWrapperComponent
 
   @ViewChild("children") childrenTmpl!: TemplateRef<any>;
 
-  private viewInited = false;
-  // this subscription is needed for the context bridge, see
-  // https://github.com/pmndrs/its-fine/issues/26#issuecomment-1466107714
-  private renderSubscription = this.passedReactContext?.render$.subscribe(
-    () => this.viewInited && this.render()
-  );
-
+  /** Whether this component is where the React root should be created (true if using React-in-Angular) */
+  private isTopLevelReact = !this.passedReactContext;
+  private reactCreateRoot: typeof ReactDOM.createRoot =
+    this.passedReactContext?.createRoot || ReactDOM.createRoot;
   private reactDomRoot: ReactDOM.Root | null = null;
 
   constructor(
@@ -60,9 +57,8 @@ export class ReactWrapperComponent
   ) {}
 
   ngAfterViewInit() {
-    this.viewInited = true;
     if (!this.elementRef) throw new Error("No element ref");
-    this.reactDomRoot = ReactDOM.createRoot(this.elementRef.nativeElement);
+    this.reactDomRoot = this.reactCreateRoot(this.elementRef.nativeElement);
     this.render();
   }
 
@@ -73,7 +69,6 @@ export class ReactWrapperComponent
   ngOnDestroy() {
     // wait one microtask to make sure that the react component is done rendering (logs errors otherwise)
     Promise.resolve().then(() => this.reactDomRoot?.unmount());
-    this.renderSubscription?.unsubscribe();
   }
 
   private render() {
@@ -84,24 +79,26 @@ export class ReactWrapperComponent
 
     let wrappers = this.angularReactService.wrappers;
 
-    if (this.passedReactContext) {
-      wrappers = [...wrappers, this.passedReactContext.ContextBridge];
-    }
-
     const children = this.props.children ? undefined : (
       <AngularTemplateOutlet tmpl={this.childrenTmpl} />
     );
 
-    this.reactDomRoot.render(
+    const wrapped = nestWrappers(
+      wrappers,
+      <this.component {...this.props}>{children}</this.component>
+    );
+
+    const toBeRendered = this.isTopLevelReact ? (
       <RootAngularContextProvider
         moduleRef={this.ngModuleRef}
         injector={this.ngInjector}
       >
-        {nestWrappers(
-          wrappers,
-          <this.component {...this.props}>{children}</this.component>
-        )}
+        {wrapped}
       </RootAngularContextProvider>
+    ) : (
+      wrapped
     );
+
+    this.reactDomRoot.render(toBeRendered);
   }
 }
