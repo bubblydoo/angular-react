@@ -5,8 +5,12 @@ import React from "react";
 export const AngularModuleContext =
   React.createContext<NgModuleRef<any> | null>(null);
 
+AngularModuleContext.displayName = "AngularModuleContext";
+
 export const AngularInjectorContext =
   React.createContext<Injector | null>(null);
+
+AngularInjectorContext.displayName = "AngularInjectorContext";
 
 export function RootAngularContextProvider({
   moduleRef,
