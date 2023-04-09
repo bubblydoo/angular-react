@@ -15,7 +15,7 @@ import {
   AngularWrapper,
   AngularReactModule,
   useToAngularTemplateRef,
-  ReactContextToken,
+  InjectableReactContextToken,
   InjectableReactContext,
   useInjected,
 } from "../projects/angular-react/src/public-api";
@@ -44,14 +44,14 @@ class ThingComponent {
   constructor(
     public injector: Injector,
     @Optional()
-    @Inject(ReactContextToken)
+    @Inject(InjectableReactContextToken)
     public passedReactContext: InjectableReactContext
   ) {}
 }
 
 const NumberDisplayWithDebug = () => {
   const passedReactContext = useInjected(
-    ReactContextToken,
+    InjectableReactContextToken,
     null,
     InjectFlags.Optional
   );

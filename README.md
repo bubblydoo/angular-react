@@ -201,13 +201,19 @@ import { useToAngularTemplateRef } from "@bubblydoo/angular-react";
   selector: 'message',
   template: `
     <div>
-      <ng-template [ngTemplateOutlet]="tmpl" [ngTemplateOutletContext]="{ message }"></ng-template>
+      <ng-container
+        [ngTemplateOutlet]="tmpl"
+        [ngTemplateOutletContext]="{ message }"
+        [ngTemplateOutletInjector]="injector"
+      ></ng-template>
     </div>
   `
 })
 class MessageComponent {
   @Input() tmpl: TemplateRef<{ message: string }>;
   @Input() message: string;
+
+  constructor(public injector: Injector) {}
 }
 
 function Text(props: { message: string }) {
@@ -225,6 +231,8 @@ function Message(props: { message: string }) {
   return <AngularWrapper component={MessageComponent} inputs={inputs} />;
 }
 ```
+
+Note: `useToAngularTemplateRef` is meant for usage with `[ngTemplateOutletInjector]="injector"`. If you can't use that, use `useToAngularTemplateRefBoundToContextAndPortals` instead.
 
 #### `useFromAngularTemplateRef`: to convert a `TemplateRef` into a React component
 

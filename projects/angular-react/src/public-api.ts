@@ -16,3 +16,6 @@ export * from "./lib/templates/template-outlet.component";
 export * from "./lib/templates/use-to-angular-template-ref";
 export * from "./lib/injectable-react-context/react-context-token";
 export * from "./lib/injectable-react-context/use-injectable-react-context";
+export * from "./lib/use-in-tree-create-root/in-tree-create-root-token";
+export * from "./lib/use-in-tree-create-root/use-in-tree-create-root";
+export * from "./lib/templates/is-top-level-react-token";

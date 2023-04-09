@@ -1,7 +1,6 @@
 import * as ng from "@angular/core";
 import React, {
   ForwardedRef,
-  ReactNode,
   forwardRef,
   useCallback,
   useEffect,
@@ -11,10 +10,11 @@ import React, {
 } from "react";
 import ReactDOM from "react-dom";
 import { Subscribable, Unsubscribable } from "rxjs";
-import { ReactContextToken } from "../injectable-react-context/react-context-token";
+import { InjectableReactContextToken } from "../injectable-react-context/react-context-token";
 import { useInjectableReactContext } from "../injectable-react-context/use-injectable-react-context";
 import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
 import { InTreeCreateRootToken } from "../use-in-tree-create-root/in-tree-create-root-token";
+import { IsTopLevelReactToken } from "../templates/is-top-level-react-token";
 
 function AngularWrapperWithModule(
   {
@@ -71,7 +71,7 @@ function AngularWrapperWithModule(
 
   const inTreeCreateRoot = useInTreeCreateRoot();
 
-  const passedReactContext = useInjectableReactContext();
+  const injectedReactContext = useInjectableReactContext();
 
   /** This effect makes sure event listeners like 'click' are registered when the element is rendered */
   useEffect(() => {
@@ -120,8 +120,9 @@ function AngularWrapperWithModule(
       // so the nested react-wrappers can access it
       const injectorForComponent = ng.Injector.create({
         providers: [
-          { provide: ReactContextToken, useValue: passedReactContext },
+          { provide: InjectableReactContextToken, useValue: injectedReactContext },
           { provide: InTreeCreateRootToken, useValue: inTreeCreateRoot.createRoot },
+          { provide: IsTopLevelReactToken, useValue: false },
         ],
         parent: ngInjector,
       });
@@ -140,7 +141,7 @@ function AngularWrapperWithModule(
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ngComponent, ngModuleRef, ngInjector, passedReactContext]
+    [ngComponent, ngModuleRef, ngInjector, injectedReactContext]
   );
 
   useEffect(() => {

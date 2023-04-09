@@ -3,9 +3,19 @@ import React from "react";
 import { useContext, useState, useEffect } from "react";
 import { AngularModuleContext } from "../angular-context/angular-context";
 import { ReactToTemplateRefComponent } from "./react-to-template-ref.component";
-import { ReactContextToken } from "../injectable-react-context/react-context-token";
+import { InjectableReactContextToken } from "../injectable-react-context/react-context-token";
 import { InjectableReactContext, useInjectableReactContext } from "../injectable-react-context/use-injectable-react-context";
+import { IsTopLevelReactToken } from "./is-top-level-react-token";
+import { createRoot } from "react-dom/client";
+import { InTreeCreateRootToken } from "../use-in-tree-create-root/in-tree-create-root-token";
+import { useInTreeCreateRoot } from "../use-in-tree-create-root/use-in-tree-create-root";
 
+/**
+ * Create a template ref from a React component.
+ *
+ * This template is meant to be used in a `[ngTemplateOutlet]` where `[ngTemplateOutletInjector]` is defined.
+ * If you can't define `[ngTemplateOutletInjector]`, use `useToAngularTemplateRefBoundToContextAndPortals`.
+ */
 export function useToAngularTemplateRef<C>(
   Component: (props: C) => any
 ): ng.TemplateRef<C> | undefined {
@@ -14,18 +24,50 @@ export function useToAngularTemplateRef<C>(
     throw new Error(
       "useToAngularTemplateRef must be used within an AngularModuleContext"
     );
-  return useToAngularTemplateRefWithModule(Component, moduleRef);
+  return useToAngularTemplateRefWithModule(
+    Component,
+    moduleRef
+  );
+}
+
+/**
+ * Create a template ref from a React component.
+ * The template ref is bound to the context of where this hook is called.
+ * Because of this, you don't need `[ngTemplateOutletInjector]` on the `<ng-container>`.
+ * This hook returns `[templateRef, portals]`.
+ * Make sure the portals are rendered somewhere in your tree: `<>{portals}</>`.
+ */
+export function useToAngularTemplateRefBoundToContextAndPortals<C>(
+  Component: (props: C) => any,
+) {
+  const moduleRef = useContext(AngularModuleContext);
+  if (!moduleRef)
+    throw new Error(
+      "useToAngularTemplateRef must be used within an AngularModuleContext"
+    );
+
+  const injectableReactContext = useInjectableReactContext();
+  const inTreeCreateRoot = useInTreeCreateRoot();
+
+  const templateRef = useToAngularTemplateRefWithModule(
+    Component,
+    moduleRef,
+    injectableReactContext,
+    inTreeCreateRoot.createRoot
+  );
+
+  return [templateRef, inTreeCreateRoot.portals] as const;
 }
 
 export function useToAngularTemplateRefWithModule<C>(
   Component: (props: C) => any,
-  ngModuleRef: ng.NgModuleRef<any>
+  ngModuleRef: ng.NgModuleRef<any>,
+  injectableReactContext?: InjectableReactContext,
+  inTreeCreateRoot?: typeof createRoot
 ): ng.TemplateRef<C> | undefined {
   const [templateRef, setTemplateRef] = useState<ng.TemplateRef<C>>();
   const [updateComponent, setUpdateComponent] =
     useState<(component: (props: C) => any) => void>();
-
-  const passedReactContext = useInjectableReactContext();
 
   useEffect(() => {
     let ignore = false;
@@ -33,8 +75,9 @@ export function useToAngularTemplateRefWithModule<C>(
 
     createReactWrapperTemplateRef<C>(
       ngModuleRef,
-      passedReactContext,
-      controller.signal
+      controller.signal,
+      injectableReactContext,
+      inTreeCreateRoot
     ).then(({ templateRef, updateComponent }) => {
       if (ignore) return;
       setTemplateRef(templateRef);
@@ -45,7 +88,7 @@ export function useToAngularTemplateRefWithModule<C>(
       ignore = true;
       controller.abort();
     };
-  }, [ngModuleRef, passedReactContext]);
+  }, [ngModuleRef, injectableReactContext, inTreeCreateRoot]);
 
   useEffect(() => {
     if (!Component || !updateComponent) return;
@@ -57,8 +100,9 @@ export function useToAngularTemplateRefWithModule<C>(
 
 export async function createReactWrapperTemplateRef<C = any>(
   ngModuleRef: ng.NgModuleRef<any>,
+  abortSignal?: AbortSignal,
   injectableReactContext?: InjectableReactContext,
-  abortSignal?: AbortSignal
+  inTreeCreateRoot?: typeof createRoot
 ) {
   const el = document.createElement("div");
 
@@ -67,12 +111,25 @@ export async function createReactWrapperTemplateRef<C = any>(
       ReactToTemplateRefComponent<C>
     >(ReactToTemplateRefComponent);
 
-  // Q: is it needed to put passedReactContext on the injector here,
-  // considering we override the injector in AngularTemplateOutlet?
+  const providers: ng.StaticProvider[] = [
+    { provide: IsTopLevelReactToken, useValue: false },
+  ];
+
+  if (injectableReactContext) {
+    providers.push({
+      provide: InjectableReactContextToken,
+      useValue: injectableReactContext,
+    });
+  }
+  if (inTreeCreateRoot) {
+    providers.push({
+      provide: InTreeCreateRootToken,
+      useValue: inTreeCreateRoot,
+    });
+  }
+
   const injectorForComponent = ng.Injector.create({
-    providers: injectableReactContext
-      ? [{ provide: ReactContextToken, useValue: injectableReactContext }]
-      : [],
+    providers,
     parent: ngModuleRef.injector,
   });
   const componentRef = componentFactory.create(injectorForComponent, [], el);

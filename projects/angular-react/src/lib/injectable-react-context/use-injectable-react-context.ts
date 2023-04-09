@@ -1,8 +1,7 @@
 import { useContextMap, ContextMap } from 'its-fine';
-import { Context, useEffect, useMemo } from 'react';
-import { BehaviorSubject, distinctUntilChanged, Observable, Subject } from 'rxjs';
+import { Context, useMemo } from 'react';
+import { BehaviorSubject, distinctUntilChanged, Observable } from 'rxjs';
 import { map } from 'rxjs';
-import { createRoot as origCreateRoot } from 'react-dom/client';
 
 /** Read functions for React contexts */
 export type InjectableReactContext = {
