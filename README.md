@@ -50,7 +50,7 @@ It takes two inputs:
 The React component will be first rendered on `ngAfterViewInit` and rerendered on every `ngOnChanges` call.
 
 ```ts
-import Button from './button.tsx';
+import Button from './button'
 
 @Component({
   template: `<react-wrapper [component]="Button" [props]="{ children: 'Hello world!' }">`
@@ -72,7 +72,7 @@ It takes a few inputs:
 - `ref?`: The ref to the rendered DOM element (uses `React.forwardRef`)
 
 ```tsx
-import { TextComponent } from './text/text.component.ts'
+import { TextComponent } from './text/text.component'
 
 function Text(props) {
   return (
@@ -120,9 +120,9 @@ If you want to have a global React Context, you can register it as follows:
 // app.component.ts
 
 constructor(angularReact: AngularReactService) {
-  const client = new ApolloClient();
+  const client = new ApolloClient()
   // equivalent to ({ children }) => <ApolloProvider client={client}>{children}</ApolloProvider>
-  angularReact.wrappers.push(({ children }) => React.createElement(ApolloProvider, { client, children }));
+  angularReact.wrappers.push(({ children }) => React.createElement(ApolloProvider, { client, children }))
 }
 ```
 
@@ -135,32 +135,32 @@ This is only needed when your host app is an Angular app. If you're using Angula
 You can get a ref to the Angular component instance as follows:
 
 ```tsx
-import { ComponentRef } from '@angular/core';
+import { ComponentRef } from '@angular/core'
 
-const ref = useRef<ComponentRef<any>>();
+const ref = useRef<ComponentRef<any>>()
 
-<AngularWrapper ref={ref} />;
+<AngularWrapper ref={ref} />
 ```
 
-To get a reference to the Angular component's HTML element, use `ref.location.nativeElement`.
+To get the component instance, use `ref.instance`. To get a reference to the Angular component's HTML element, use `ref.location.nativeElement`.
 
 To forward a ref to a React component, you can simply use the props:
 
 ```tsx
 const Message = forwardRef((props, ref) => {
-  return <div ref={ref}>{props.message}</div>;
-});
+  return <div ref={ref}>{props.message}</div>
+})
 
 @Component({
-  template: `<react-wrapper [component]="Message" [props]="{ ref, message }">`
+  template: `<react-wrapper [component]="Message" [props]="{ ref, message }">`,
 })
 export class MessageComponent {
-  Message = Message;
+  Message = Message
 
-  message = 'hi!';
+  message = 'hi!'
 
   ref(div: HTMLElement) {
-    div.innerHTML = 'hi from the callback ref!';
+    div.innerHTML = 'hi from the callback ref!'
   }
 }
 ```
@@ -174,19 +174,19 @@ export class MessageComponent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 class InnerComponent {
-  number$ = this.contexts.read(NumberContext);
+  number$ = this.contexts.read(NumberContext)
 
-  constructor(@Inject(PassedReactContextToken) public contexts: PassedReactContext) {}
+  constructor(@Inject(InjectableReactContextToken) public contexts: InjectableReactContext) {}
 }
 
 function App() {
-  const [number, setNumber] = useState(42);
+  const [number, setNumber] = useState(42)
   return (
     <NumberContext.Provider value={number}>
       <button onClick={() => setNumber(number + 1)}>increment</button>
       <AngularWrapper component={InnerComponent} />
     </NumberContext.Provider>
-  );
+  )
 }
 ```
 
@@ -195,7 +195,7 @@ function App() {
 #### `useToAngularTemplateRef`: to convert a React component into a `TemplateRef`
 
 ```tsx
-import { useToAngularTemplateRef } from "@bubblydoo/angular-react";
+import { useToAngularTemplateRef } from "@bubblydoo/angular-react"
 
 @Component({
   selector: 'message',
@@ -207,11 +207,11 @@ import { useToAngularTemplateRef } from "@bubblydoo/angular-react";
         [ngTemplateOutletInjector]="injector"
       ></ng-template>
     </div>
-  `
+  `,
 })
 class MessageComponent {
-  @Input() tmpl: TemplateRef<{ message: string }>;
-  @Input() message: string;
+  @Input() tmpl: TemplateRef<{ message: string }>
+  @Input() message: string
 
   constructor(public injector: Injector) {}
 }
@@ -221,14 +221,14 @@ function Text(props: { message: string }) {
 }
 
 function Message(props: { message: string }) {
-  const tmpl = useToAngularTemplateRef(Text);
+  const tmpl = useToAngularTemplateRef(Text)
 
   const inputs = useMemo(() => ({
     message: props.message,
-    tmpl
-  }), [props.message, tmpl]);
+    tmpl,
+  }), [props.message, tmpl])
 
-  return <AngularWrapper component={MessageComponent} inputs={inputs} />;
+  return <AngularWrapper component={MessageComponent} inputs={inputs} />
 }
 ```
 
@@ -238,12 +238,12 @@ Note: `useToAngularTemplateRef` is meant for usage with `[ngTemplateOutletInject
 
 ```tsx
 function Message(props: {
-  message: string;
-  tmpl: TemplateRef<{ message: string }>;
+  message: string
+  tmpl: TemplateRef<{ message: string }>
 }) {
-  const Template = useFromAngularTemplateRef(props.tmpl);
+  const Template = useFromAngularTemplateRef(props.tmpl)
 
-  return <Template message={props.message.toUpperCase()} />;
+  return <Template message={props.message.toUpperCase()} />
 }
 
 @Component({
@@ -259,9 +259,9 @@ function Message(props: {
   `,
 })
 class MessageComponent {
-  Message = Message;
+  Message = Message
 
-  @Input() message!: string;
+  @Input() message!: string
 }
 ```
 
