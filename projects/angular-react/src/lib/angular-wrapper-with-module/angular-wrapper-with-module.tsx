@@ -26,6 +26,7 @@ function AngularWrapperWithModule(
     events,
     outputs,
     children,
+    serverFallback
   }: {
     name?: string;
     component: any;
@@ -35,6 +36,7 @@ function AngularWrapperWithModule(
     events?: Record<string, (ev: Event) => any>;
     outputs?: Record<string, (value: any) => any>;
     children?: any;
+    serverFallback?: string;
   },
   ref: ForwardedRef<ng.ComponentRef<any> | null>
 ) {
@@ -229,7 +231,7 @@ function AngularWrapperWithModule(
 
   return (
     <>
-      {React.createElement(componentName, { ref: elRef })}
+      {React.createElement(componentName, { ref: elRef }, serverFallback)}
       {ngContentContainerEl &&
         ReactDOM.createPortal(<>{children}</>, ngContentContainerEl)}
       {inTreeCreateRoot.portals}
