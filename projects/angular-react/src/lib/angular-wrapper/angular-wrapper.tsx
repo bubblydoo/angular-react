@@ -14,11 +14,8 @@ function AngularWrapper(
   },
   forwardedRef: ForwardedRef<ComponentRef<any>>
 ) {
-  const moduleRef = useContext(AngularModuleContext);
-  const injector = useContext(AngularInjectorContext);
-
-  if (!moduleRef) return <></>;
-  if (!injector) return <></>;
+  const moduleRef = useContext(AngularModuleContext)!;
+  const injector = useContext(AngularInjectorContext)!;
 
   return (
     <AngularWrapperWithModule
