@@ -1,6 +1,6 @@
 {
   "name": "@bubblydoo/angular-react",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "license": "MIT",
   "author": "Hans Otto Wirtz <hansottowirtz@gmail.com>",
   "description": "Use React in Angular and Angular in React, easily",
@@ -12,7 +12,7 @@
   "peerDependencies": {
     "@angular/common": ">14.0.0",
     "@angular/core": ">14.0.0",
-    "its-fine": "^1.1.0"
+    "its-fine": "^1.1.1"
   },
   "dependencies": {
     "tslib": "^2.3.0"

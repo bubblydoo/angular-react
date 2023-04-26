@@ -2073,7 +2073,7 @@ __metadata:
     "@types/react": ^18.0.21
     "@types/react-dom": ^18.0.6
     babel-loader: ^8.2.5
-    its-fine: ^1.1.0
+    its-fine: ^1.1.1
     jasmine-core: ~4.4.0
     karma: ~6.4.1
     karma-chrome-launcher: ~3.1.1
@@ -10699,14 +10699,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"its-fine@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "its-fine@npm:1.1.0"
+"its-fine@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "its-fine@npm:1.1.1"
   dependencies:
     "@types/react-reconciler": ^0.28.0
   peerDependencies:
     react: ">=18.0"
-  checksum: 4b8cf42b43f604818235b8a35003ce06e93a42115183f488fa616777bf2e309f7ce7a4f50273478de5f1b031374e794b98bad5dbf21583fd36096d6b6f013232
+  checksum: abf9e98d406192291dc786a8ab90f0debf741d619d9878c40b7ccd5fbd98875ddfcadff780f2967200156347b5682fcf03df7a054c6dcea4be68b1ab7586b790
   languageName: node
   linkType: hard
 
