@@ -26,7 +26,7 @@ function AngularWrapperWithModule(
     events,
     outputs,
     children,
-    serverFallback
+    serverFallback,
   }: {
     name?: string;
     component: any;
@@ -55,7 +55,7 @@ function AngularWrapperWithModule(
 
   const [componentFactory, setComponentFactory] =
     useState<ng.ComponentFactory<any> | null>(null);
-  const [renderedComponent, setRenderedComponentRef] =
+  const [renderedComponent, setRenderedComponent] =
     useState<ng.ComponentRef<any> | null>(null);
   const [renderedElement, setRenderedElement] =
     useState<HTMLElement | null>(null);
@@ -107,7 +107,7 @@ function AngularWrapperWithModule(
   }, [renderedElement, events, ngInjector]);
 
   const elRef = useCallback<(node: HTMLElement) => void>(
-    async (node) => {
+    (node) => {
       if (node === null) return;
       setRenderedElement(node);
       const projectableNodes = ngContentContainerEl
@@ -139,7 +139,7 @@ function AngularWrapperWithModule(
       appRef.attachView(componentRef.hostView);
 
       setComponentFactory(componentFactory);
-      setRenderedComponentRef(componentRef);
+      setRenderedComponent(componentRef);
     },
     // inputs doesn't need to be a dep, this is already handled in the next useEffect
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,7 +207,15 @@ function AngularWrapperWithModule(
   useEffect(() => {
     if (!renderedComponent) return;
     return () => {
+      const node = renderedComponent.location.nativeElement;
+      const nextSibling = node.nextSibling;
+      const parentNode = node.parentNode;
+      // destroy will remove node from parentNode,
+      // but we want the host element to be managed by React
       renderedComponent!.destroy();
+      // so we re-insert the node before the original nextSibling
+      // if there's no parent node, React already removed the element
+      parentNode?.insertBefore(node, nextSibling);
     };
   }, [renderedComponent]);
 
