@@ -1,6 +1,6 @@
 {
   "name": "@bubblydoo/angular-react",
-  "version": "0.4.4-beta.0",
+  "version": "0.4.4",
   "license": "MIT",
   "author": "Hans Otto Wirtz <hansottowirtz@gmail.com>",
   "description": "Use React in Angular and Angular in React, easily",
