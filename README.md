@@ -205,7 +205,7 @@ import { useToAngularTemplateRef } from "@bubblydoo/angular-react"
         [ngTemplateOutlet]="tmpl"
         [ngTemplateOutletContext]="{ message }"
         [ngTemplateOutletInjector]="injector"
-      ></ng-template>
+      ></ng-container>
     </div>
   `,
 })
