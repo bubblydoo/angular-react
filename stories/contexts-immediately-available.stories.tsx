@@ -2,6 +2,9 @@ import { CommonModule, APP_BASE_HREF } from "@angular/common";
 import {
   ChangeDetectorRef,
   Component,
+  INJECTOR,
+  Inject,
+  Injector,
   Input,
   TemplateRef,
 } from "@angular/core";
@@ -24,22 +27,10 @@ function useThrowIfNoContext() {
   return value;
 }
 
-// return (
-//   <CreatorOverview
-//     {...props}
-//     visible
-//     confirmButtonTmpl={(tmplProps) => fromAngularTemplateRef(props.confirmButtonTmpl, tmplProps)}
-//   ></CreatorOverview>
-
 const Button = ({ children }: { children: any }) => {
   useThrowIfNoContext();
   return <button>{children}</button>;
 };
-
-// const Creator = (props: any) => {
-//   const confirmButtonTmpl = useToAngularTemplateRef(OverviewTmpl);
-
-// }
 
 @Component({
   selector: "creator",
@@ -47,12 +38,15 @@ const Button = ({ children }: { children: any }) => {
     <ng-container
       [ngTemplateOutlet]="overviewTmpl"
       [ngTemplateOutletContext]="{ confirmButtonTmpl: confirmButtonTmpl }"
+      [ngTemplateOutletInjector]="injector"
     ></ng-container>
   `,
 })
 class CreatorComponent {
   @Input() overviewTmpl!: TemplateRef<{}>;
   @Input() confirmButtonTmpl!: TemplateRef<{}>;
+
+  constructor(@Inject(INJECTOR) public injector: Injector) {}
 }
 
 const Creator = forwardRef<
@@ -74,7 +68,7 @@ const Creator = forwardRef<
   return <AngularWrapper component={CreatorComponent} inputs={inputs} />;
 });
 
-export const CreatorOverview = forwardRef<
+const CreatorOverview = forwardRef<
   {},
   { confirmButtonTmpl: (props: {}) => any }
 >((props, ref) => {
@@ -96,11 +90,16 @@ export const CreatorOverview = forwardRef<
 @Component({
   selector: "creator-overview",
   template: `
-    <ng-container [ngTemplateOutlet]="confirmButtonTmpl"></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="confirmButtonTmpl"
+      [ngTemplateOutletInjector]="injector"
+    ></ng-container>
   `,
 })
 class CreatorOverviewComponent {
   @Input() confirmButtonTmpl!: TemplateRef<{}>;
+
+  constructor(@Inject(INJECTOR) public injector: Injector) {}
 }
 
 const OverviewTmpl = (props: { confirmButtonTmpl: TemplateRef<{}> }) => {
@@ -116,40 +115,9 @@ const OverviewTmpl = (props: { confirmButtonTmpl: TemplateRef<{}> }) => {
 };
 
 const ConfirmButtonTmpl = (props: {}) => {
+  useThrowIfNoContext();
   return <Button>submit</Button>;
 };
-
-// const OverviewTmpl = (props: { confirmButtonTmpl: TemplateRef<{}> }) => {
-//   const fromAngularTemplateRef = useFromAngularTemplateRefFn();
-//   return (
-//     <CreatorOverview
-//       {...props}
-//       visible
-//       confirmButtonTmpl={(tmplProps) => fromAngularTemplateRef(props.confirmButtonTmpl, tmplProps)}
-//     ></CreatorOverview>
-//   );
-// };
-
-const Overview = () => {
-  const fromAngularTemplateRef = useFromAngularTemplateRefFn();
-
-  // const value = useContext(SomeContext);
-  // console.log(value)
-  return (
-    <AngularWrapper
-      component={OverviewInnerComponent}
-      inputs={{ buttonTmpl: useToAngularTemplateRef(Button) }}
-    />
-  );
-};
-
-@Component({
-  selector: "overview-inner",
-  template: "<ng-container [ngTemplateOutlet]='buttonTmpl'></ng-container>",
-})
-class OverviewInnerComponent {
-  @Input() buttonTmpl!: TemplateRef<{}>;
-}
 
 function AppInner() {
   return (
