@@ -304,6 +304,40 @@ You might want to use resolutions or overrides if you run into NG0203 errors.
 }
 ```
 
+## Usage notes
+
+### `this` is undefined when passing an Angular component method as a React prop
+
+Angular component methods are always called with the component instance as `this`. When you pass an Angular method as a prop to a React component, `this` will be `undefined`.
+
+```ts
+@Component({
+  template: `<react-wrapper [component]="Button" [props]="{ onClick }">`
+})
+class AppComponent {
+  Button = Button
+
+  onClick() {
+    console.log(this) // undefined
+  }
+}
+```
+
+You can fix it as follows:
+
+```ts
+@Component({
+  template: `<react-wrapper [component]="Button" [props]="{ onClick }">`
+})
+class AppComponent {
+  Button = Button
+
+  onClick = () => {
+    console.log(this) // AppComponent instance
+  }
+}
+```
+
 ## Further reading
 
 See this blog post for the motivation and more details: [Transitioning from Angular to React, without starting from scratch](https://dev.to/bubblydoo/transitioning-from-angular-to-react-without-starting-from-scratch-j66)
