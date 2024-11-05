@@ -87,7 +87,9 @@ export class ReactWrapperComponent
 
     let wrappers = this.angularReactService.wrappers;
 
-    const children = this.props.children ? undefined : (
+    // unlike in React, where children passed in the body have precedence over props.children,
+    // we can't know if childrenTmpl is empty or not, so props.children takes precedence
+    const children = this.props.children ?? (
       <AngularTemplateOutlet tmpl={this.childrenTmpl} />
     );
 
